@@ -6,5 +6,6 @@ enum class Category{
     SALARY,
     ENTERTAINMENT,
     UTILITIES,
-    TRANSPORT
+    TRANSPORT,
+    Other
 }
