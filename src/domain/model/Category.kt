@@ -7,5 +7,5 @@ enum class Category{
     ENTERTAINMENT,
     UTILITIES,
     TRANSPORT,
-    Other
+    OTHER
 }
