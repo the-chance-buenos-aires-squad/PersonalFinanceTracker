@@ -2,3 +2,4 @@ package cli
 
 class CommandLineInterface {
 }
+

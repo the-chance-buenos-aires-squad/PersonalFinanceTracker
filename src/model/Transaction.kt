@@ -1,5 +1,6 @@
-package domain.model
+package model
 
+import domain.model.Category
 import java.time.LocalDate
 import java.util.*
 
