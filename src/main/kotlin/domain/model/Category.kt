@@ -1,4 +1,10 @@
 package domain.model
 
-class Category {
+enum class Category{
+    FOOD,
+    RENT,
+    SALARY,
+    ENTERTAINMENT,
+    UTILITIES,
+    TRANSPORT
 }
