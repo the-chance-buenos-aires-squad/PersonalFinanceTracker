@@ -1,4 +1,6 @@
 package model
 
-class TransactionType {
+enum class TransactionType {
+    INCOME,
+    EXPENSES
 }
