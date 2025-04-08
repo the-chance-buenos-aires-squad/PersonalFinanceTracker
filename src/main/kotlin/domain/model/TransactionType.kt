@@ -1,4 +1,6 @@
 package domain.model
 
-class TransactionType {
+enum class TransactionType {
+    INCOME,
+    EXPENSES
 }
