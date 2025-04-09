@@ -1,15 +1,14 @@
 package checks
 
-import model.Transaction
-
 fun main() {
+
 
 }
 
-fun <T> check(
+fun  check(
     message:String,
-    result : T,
-    correctResult : T
+    result : Boolean,
+    correctResult : Boolean
 ){
     println(message)
     if (result == correctResult) println("successful") else println("fiald")
