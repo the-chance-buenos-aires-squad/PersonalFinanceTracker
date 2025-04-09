@@ -1,10 +1,10 @@
 package checks
 
 import com.sun.tools.javac.Main
-import data_source.DefaultDataSource
-import domain.model.Category
+import data_source.TransactionDataSource
 import model.MonthlySummary
 import model.Transaction
+import model.TransactionCategory
 import model.TransactionType
 import repository.TransactionRepository
 import java.time.LocalDate
@@ -16,36 +16,36 @@ fun main() {
         Transaction(
             amount = 20000.0,
             type = TransactionType.INCOME,
-            category = Category.SALARY,
+            transactionCategory = TransactionCategory.SALARY,
             date = LocalDate.of(2025, 1, 1)
         ),
         Transaction(
             amount = 1000.0,
             type = TransactionType.INCOME,
-            category = Category.OTHER,
+            transactionCategory = TransactionCategory.OTHER,
             date = LocalDate.of(2025, 1, 4)
         ),
         Transaction(
             amount = 8000.0,
             type = TransactionType.EXPENSES,
-            category = Category.RENT,
+            transactionCategory = TransactionCategory.RENT,
             date = LocalDate.of(2025, 1, 5)
         ),
         Transaction(
             amount = 500.0,
             type = TransactionType.EXPENSES,
-            category = Category.TRANSPORT,
+            transactionCategory = TransactionCategory.TRANSPORT,
             date = LocalDate.of(2025, 1, 20)
         ),
         Transaction(
             amount = 1000.0,
             type = TransactionType.INCOME,
-            category = Category.OTHER,
+            transactionCategory = TransactionCategory.OTHER,
             date = LocalDate.of(2025, 1, 31)
         )
     )
-    val dataSource = object : DefaultDataSource {
-        override fun addTransactions(transaction: Transaction): Transaction {
+    val dataSource = object : TransactionDataSource {
+        override fun addTransactions(transaction: Transaction): Boolean {
             TODO("Not yet implemented")
         }
 
@@ -54,12 +54,11 @@ fun main() {
         }
 
         override fun getAllTransactions(): List<Transaction> = someDemoTransaction
-
         override fun getTransactionById(id: UUID): Transaction {
             TODO("Not yet implemented")
         }
 
-        override fun updateTransaction(transaction: Transaction): Transaction {
+        override fun updateTransaction(transaction: Transaction): Boolean {
             TODO("Not yet implemented")
         }
 
