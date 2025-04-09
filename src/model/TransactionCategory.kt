@@ -1,6 +1,6 @@
-package domain.model
+package model
 
-enum class Category{
+enum class TransactionCategory{
     FOOD,
     RENT,
     SALARY,

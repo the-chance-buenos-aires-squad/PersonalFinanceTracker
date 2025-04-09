@@ -3,15 +3,12 @@ package data_source
 import model.Transaction
 import java.util.UUID
 
-
-
-class DataSource : data_source.DefaultDataSource{
-    val transactionList = mutableListOf<Transaction>()
-
-    override fun addTransactions(transaction: Transaction): Transaction {
+class InMemoryTransactionsDataSource :TransactionDataSource{
+    private val transactionList = mutableListOf<Transaction>()
+    override fun addTransactions(transaction: Transaction): Boolean {
         TODO("Not yet implemented")
-
     }
+
 
     override fun deleteTransaction(id: UUID): Boolean {
         TODO("Not yet implemented")
@@ -21,13 +18,14 @@ class DataSource : data_source.DefaultDataSource{
         TODO("Not yet implemented")
     }
 
-    override fun getTransactionById(id: UUID): Transaction {
+    override fun getTransactionById(id: UUID): Transaction? {
         TODO("Not yet implemented")
     }
 
-    override fun updateTransaction(transaction: Transaction): Transaction {
+    override fun updateTransaction(transaction: Transaction): Boolean {
         TODO("Not yet implemented")
     }
+
 
 }
 
