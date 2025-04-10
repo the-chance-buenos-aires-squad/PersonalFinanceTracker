@@ -23,7 +23,7 @@ fun runBalanceChecks() {
         dataSource.addTransactions(data)
     }
     check(
-        message = "when Income greater than expense",
+        message = "when Income greater than expense should return positive value",
         result = transactionManager.getBalance() == 1200.0,
         correctResult = true
     )
