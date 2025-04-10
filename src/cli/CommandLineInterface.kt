@@ -29,7 +29,7 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
         println("Choose transaction type:")
         val types=TransactionType.values()
         for ((index,t) in types.withIndex()) {
-            println("${index + 1}. ${t.name.capitalize()}")
+            println("${index + 1}. ${t.name.lowercase().replaceFirstChar { it.uppercase() }}")
         }
             var type:TransactionType?=null
             while (type==null){
@@ -45,7 +45,7 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
         println("Choose category: ")
         val categories =TransactionCategory.values()
         for ((index,cat) in categories.withIndex()){
-            println("${index+1}. ${cat.name.capitalize()}")
+            println("${index+1}. ${cat.name.lowercase().replaceFirstChar { it.uppercase() }}")
         }
 
         var category:TransactionCategory?=null
