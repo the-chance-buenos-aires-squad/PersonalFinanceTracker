@@ -1,10 +1,10 @@
 package model
 
 data class MonthlySummary(
-    val month: Int,
-    val year: Int,
     val totalIncome: Double,
     val totalExpense: Double,
-    val balance: Double,
+    val incomeList: List<Transaction>,
+    val expenseList: List<Transaction>?,
+    val highestIncomeCategory: TopCategory,
+    val highestExpenseCategory: TopCategory?,
 )
-
