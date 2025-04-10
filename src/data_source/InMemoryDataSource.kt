@@ -9,7 +9,9 @@ class DataSource : data_source.DefaultDataSource{
     val transactionList = mutableListOf<Transaction>()
 
     override fun addTransactions(transaction: Transaction): Transaction {
-        TODO("Not yet implemented")
+        transactionList.add(transaction)
+        return transaction
+
 
     }
 
@@ -18,11 +20,13 @@ class DataSource : data_source.DefaultDataSource{
     }
 
     override fun getAllTransactions(): List<Transaction> {
-        TODO("Not yet implemented")
+        return transactionList
+
     }
 
-    override fun getTransactionById(id: UUID): Transaction {
-        TODO("Not yet implemented")
+    override fun getTransactionById(id: UUID): Transaction? {
+        return transactionList.find { it.id==id}
+
     }
 
     override fun updateTransaction(transaction: Transaction): Transaction {
