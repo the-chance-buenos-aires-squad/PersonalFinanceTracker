@@ -6,6 +6,7 @@ import model.TopCategory
 import model.Transaction
 import model.TransactionType
 import java.time.LocalDate
+import java.util.*
 
 class TransactionManager(private val dataSource: TransactionDataSource) {
 
@@ -55,6 +56,9 @@ class TransactionManager(private val dataSource: TransactionDataSource) {
         )
     }
 
+    fun addTransaction(transaction: Transaction): Boolean = dataSource.addTransactions(transaction)
+    fun deleteTransaction(id: UUID): Boolean = dataSource.deleteTransaction(id)
+    fun updateTransaction(transaction: Transaction): Boolean = dataSource.updateTransaction(transaction)
     fun getBalance(): Double {
         val transactions = dataSource.getAllTransactions()
         val income = transactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }
