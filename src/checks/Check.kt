@@ -46,10 +46,12 @@ fun main() {
         correctResult = false
     )
 
+
+    dataSource.addTransactions(transaction2)
     check(
-        message = "Update non added transaction should return false",
+        message = "Update transaction should return true",
         result = dataSource.updateTransaction(transaction2),
-        correctResult = false
+        correctResult = true
     )
 
     check(
