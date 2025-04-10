@@ -5,6 +5,6 @@ data class MonthlySummary(
     val totalExpense: Double,
     val incomeList: List<Transaction>,
     val expenseList: List<Transaction>?,
-    val highestIncomeCategory: TopCategory,
+    val highestIncomeCategory: TopCategory?,
     val highestExpenseCategory: TopCategory?,
 )

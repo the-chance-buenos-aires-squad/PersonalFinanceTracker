@@ -32,16 +32,17 @@ class TransactionManager(val dataSource: TransactionDataSource) {
                 }
             }
         }
-        val highestIncome = incomeList.maxBy { it.amount }
-        val highestExpense: Transaction? = null
+        val highestIncome: Transaction? = incomeList.maxByOrNull { it.amount }
+        val highestExpense: Transaction? = expanseList.maxByOrNull { it.amount }
         if (expanseList.isNotEmpty()) expanseList.maxBy { it.amount }
-        val topIncomeCategory = TopCategory(highestIncome.amount, highestIncome.transactionCategory)
+        var topIncomeCategory: TopCategory? = null
         var topExpenseCategory: TopCategory? = null
-
+        if (highestIncome != null) {
+            topIncomeCategory = TopCategory(highestIncome.amount, highestIncome.transactionCategory)
+        }
         if (highestExpense != null) {
             topExpenseCategory = TopCategory(highestExpense.amount, highestExpense.transactionCategory)
         }
-
         return MonthlySummary(
             totalIncome = totalIncome,
             totalExpense = totalExpense,
