@@ -28,7 +28,7 @@ fun main() {
         correctResult = true)
 
     check(" Deleting transaction to system , return true  ",
-        result = transactionManager.deleteTransaction(transaction),
+        result = transactionManager.deleteTransaction(transaction.id),
         correctResult = true)
 
     check(" Updating transaction to system , return true  ",
