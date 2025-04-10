@@ -1,7 +1,7 @@
 package checks
 
-fun main() {
 
+fun main() {
 
 }
 
