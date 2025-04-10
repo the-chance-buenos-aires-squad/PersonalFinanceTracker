@@ -1,17 +1,15 @@
 package checks
 
-import com.sun.tools.javac.Main
 import data_source.TransactionDataSource
 import model.MonthlySummary
 import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
-import repository.TransactionRepository
+import repository.TransactionManager
 import java.time.LocalDate
 import java.util.*
 
 fun main() {
-
     val someDemoTransaction = listOf(
         Transaction(
             amount = 20000.0,
@@ -61,9 +59,8 @@ fun main() {
         override fun updateTransaction(transaction: Transaction): Boolean {
             TODO("Not yet implemented")
         }
-
     }
-    val repository = TransactionRepository(dataSource)
+    val repository = TransactionManager(dataSource)
     check(
         "When Valid Month It Should return MonthlySummary successfully",
         repository.getMonthlySummaryReport(1),
