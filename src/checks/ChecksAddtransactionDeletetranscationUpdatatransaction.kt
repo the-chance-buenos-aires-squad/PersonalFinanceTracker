@@ -23,17 +23,23 @@ fun main() {
     )
 
 
-    check(" Adding transaction to system , return true  ",
+    check(
+        " When Add transaction to system should return true",
         result = transactionManager.addTransaction(transaction),
-        correctResult = true)
+        correctResult = true
+    )
 
-    check(" Deleting transaction to system , return true  ",
+    check(
+        " When delete transaction to system should return true  ",
         result = transactionManager.deleteTransaction(transaction.id),
-        correctResult = true)
+        correctResult = true
+    )
 
-    check(" Updating transaction to system , return true  ",
+    check(
+        " when Update transaction to system should return true  ",
         result = transactionManager.updateTransaction(transaction),
-        correctResult = true)
+        correctResult = true
+    )
 
 
 }

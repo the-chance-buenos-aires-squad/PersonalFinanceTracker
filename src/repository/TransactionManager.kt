@@ -8,16 +8,7 @@ class TransactionManager (val dataSource: TransactionDataSource){
 
 
 fun addTransaction(transaction : Transaction) : Boolean = dataSource.addTransactions(transaction)
-
-fun deleteTransaction(id : UUID?) : Boolean {
-    if(id != null) {
-
-        return dataSource.deleteTransaction(id)
-    }
-    else{
-        return  false
-    }
-}
+fun deleteTransaction(id : UUID) : Boolean = dataSource.deleteTransaction(id)
 fun updateTransaction(transaction : Transaction) : Boolean = dataSource.updateTransaction(transaction)
 
 }
