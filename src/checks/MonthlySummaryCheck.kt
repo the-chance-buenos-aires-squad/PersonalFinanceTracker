@@ -47,11 +47,11 @@ fun main() {
             date = LocalDate.of(2025, 1, 20)
         )
     )
-    val manger = TransactionManager(dataSource)
+    val manager = TransactionManager(dataSource)
     val memoryTransactionsDataSource = dataSource.getAllTransactions()
     check(
         "When Valid Month It Should return MonthlySummary successfully",
-        manger.getMonthlySummaryReport(1) == MonthlySummary(
+        manager.getMonthlySummaryReport(1) == MonthlySummary(
             totalIncome = 22000.0,
             totalExpense = 8500.0,
             incomeList = memoryTransactionsDataSource.filter { it.type == TransactionType.INCOME },
@@ -64,7 +64,7 @@ fun main() {
     check(
         "When Valid Month but no expense" +
                 "It Should return MonthlySummary empty expenseList and highestExpendCategory null",
-        manger.getMonthlySummaryReport(1) == MonthlySummary(
+        manager.getMonthlySummaryReport(1) == MonthlySummary(
             totalIncome = 22000.0,
             totalExpense = 0.0,
             incomeList = memoryTransactionsDataSource.filter { it.type == TransactionType.INCOME },
@@ -78,7 +78,7 @@ fun main() {
     check(
         "When Valid Month but no Income" +
                 "It Should return MonthlySummary empty incomeList and highestIncomeCategory null",
-        manger.getMonthlySummaryReport(1) == MonthlySummary(
+        manager.getMonthlySummaryReport(1) == MonthlySummary(
             totalIncome = 0.0,
             totalExpense = 8500.0,
             incomeList = listOf(),
@@ -91,37 +91,37 @@ fun main() {
     )
     check(
         "When there are no transactions in the specified month, it should return null",
-        manger.getMonthlySummaryReport(2) == null,
+        manager.getMonthlySummaryReport(2) == null,
         true
     )
     check(
         "When the user enters a negative month number, it should return null",
-        manger.getMonthlySummaryReport(-1) == null,
+        manager.getMonthlySummaryReport(-1) == null,
         true
     )
     check(
         "When the user enters a month less than 1, it should return null",
-        manger.getMonthlySummaryReport(0) == null,
+        manager.getMonthlySummaryReport(0) == null,
         true
     )
     check(
         "When the user enters a month greater than 12, it should return null",
-        manger.getMonthlySummaryReport(13) == null,
+        manager.getMonthlySummaryReport(13) == null,
         true
     )
     check(
         "When the user enters a negative year, it should return null",
-        manger.getMonthlySummaryReport(1, -1) == null,
+        manager.getMonthlySummaryReport(1, -1) == null,
         true
     )
     check(
         "When the specified year has no transactions but the month is valid, it should return null",
-        manger.getMonthlySummaryReport(1, 2000) == null,
+        manager.getMonthlySummaryReport(1, 2000) == null,
         true
     )
     check(
         "When the user enters a future year, it should return null",
-        manger.getMonthlySummaryReport(1, 2030) == null,
+        manager.getMonthlySummaryReport(1, 2030) == null,
         true
     )
 }
