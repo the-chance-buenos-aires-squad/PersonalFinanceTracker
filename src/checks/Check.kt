@@ -11,50 +11,79 @@ import java.util.*
 fun main() {
     val dataSource = InMemoryTransactionsDataSource()
     val transactionManager = TransactionManager(dataSource)
-    val retrievedTransaction = dataSource.getTransactionById(UUID.randomUUID())
-
-    val transaction1 = Transaction(
-        id = UUID.randomUUID(),
-        date = LocalDate.now(),
-        transactionCategory = TransactionCategory.FOOD,
-        type = TransactionType.EXPENSES,
-        amount = 50.0
+     dataSource.addTransactions(
+        Transaction(
+            amount = 20000.0,
+            type = TransactionType.EXPENSES,
+            transactionCategory = TransactionCategory.SALARY,
+            date = LocalDate.of(2025, 1, 1)
+        )
     )
+    dataSource.addTransactions(
+        Transaction(
+            amount = 1000.0,
+            type = TransactionType.EXPENSES,
+            transactionCategory = TransactionCategory.OTHER,
+            date = LocalDate.of(2025, 1, 5)
+        )
+    )
+    dataSource.addTransactions(
+        Transaction(
+            amount = 1000.0,
+            type = TransactionType.EXPENSES,
+            transactionCategory = TransactionCategory.OTHER,
+            date = LocalDate.of(2025, 1, 10)
+        )
+    )
+    dataSource.addTransactions(
+        Transaction(
+            amount = 8000.0,
+            type = TransactionType.EXPENSES,
+            transactionCategory = TransactionCategory.RENT,
+            date = LocalDate.of(2025, 1, 14)
+        )
+    )
+    dataSource.addTransactions(
+        Transaction(
+            amount = 500.0,
+            type = TransactionType.EXPENSES,
+            transactionCategory = TransactionCategory.TRANSPORT,
+            date = LocalDate.of(2025, 1, 20)
+        )
+    )
+
+
+
 
     check(
         message = "The number of transactions should be 3",
-        result = transactionManager.getAllTransactions().size == 3,
+        result = transactionManager.getAllTransactions().size == 5,
         correctResult = true
     )
     check(
-        message = "The user does not do all transactions",
-        result = dataSource.getAllTransactions().size < 5,
+        message = "The length of transactions not enough",
+        result = dataSource.getAllTransactions().size < 8,
         correctResult = true
     )
-    check(
-        message = "No transactions should be retrieved",
-        result = transactionManager.getAllTransactions().isEmpty(),
-        correctResult = false
-    )
-
-
-    val transaction = Transaction(
-        id = UUID.randomUUID(),
-        date = LocalDate.now(),
-        transactionCategory = TransactionCategory.FOOD,
-        type = TransactionType.EXPENSES,
-        amount = 50.0
-    )
+    val emptyDataSource= InMemoryTransactionsDataSource()
+    val secondTransaction= TransactionManager(emptyDataSource)
 
 
     check(
-        message = "The transaction should be retrieved by its ID",
-        result = retrievedTransaction == transaction,
+        message = "when transactions is empty should return true",
+        result = secondTransaction.getAllTransactions().isEmpty(),
         correctResult = true
     )
 
-    val nonExistentId = UUID.randomUUID()
-    transactionManager.getTransactionById(nonExistentId)
+
+
+
+
+
+
+
+    val retrievedTransaction = dataSource.getTransactionById(UUID.randomUUID())
+
     check(
         message = "Retrieving by invalid ID should return null",
         result = retrievedTransaction == null,
