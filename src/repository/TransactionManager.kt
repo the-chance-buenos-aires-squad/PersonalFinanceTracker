@@ -7,7 +7,8 @@ import model.Transaction
 import model.TransactionType
 import java.time.LocalDate
 
-class TransactionManager(val dataSource: TransactionDataSource) {
+class TransactionManager(private val dataSource: TransactionDataSource) {
+
 // add delete update
 
 
@@ -54,6 +55,12 @@ class TransactionManager(val dataSource: TransactionDataSource) {
         )
     }
 
-// getBalanceReport
+    fun getBalance(): Double {
+        val transactions = dataSource.getAllTransactions()
+        val income = transactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }
+        val expense = transactions.filter { it.type == TransactionType.EXPENSES }.sumOf { it.amount }
+        val balance = income - expense
+        return balance
+    }
 
 }
