@@ -5,24 +5,35 @@ import java.util.*
 import kotlin.system.exitProcess
 
 class CommandLineInterface {
+    var addTransactionCalled = false
+    var viewAllTransactionsCalled = false
+    var editTransactionCalled = false
+    var deleteTransactionCalled = false
+    var viewMonthlySummaryCalled = false
+    var viewCurrentBalanceCalled = false
+    var exitCalled = false
 
     fun start() {
         while (true) {
             displayMenu()
-            when (readlnOrNull()?.trim()) {
-                "1" -> addTransaction()
-                "2" -> viewAllTransactions()
-                "3" -> editTransaction()
-                "4" -> deleteTransaction()
-                "5" -> viewMonthlySummary()
-                "6" -> viewCurrentBalance()
-                "7" -> exit()
-                else -> println("Invalid choice. Please try again.")
-            }
+            handleUserInput(readlnOrNull())
         }
     }
 
-     fun displayMenu() {
+    fun handleUserInput(input: String?) {
+        when (input?.trim()) {
+            "1" -> addTransaction()
+            "2" -> viewAllTransactions()
+            "3" -> editTransaction()
+            "4" -> deleteTransaction()
+            "5" -> viewMonthlySummary()
+            "6" -> viewCurrentBalance()
+            "7" -> exit()
+            else -> println("Invalid choice. Please try again.")
+        }
+    }
+
+      private fun displayMenu() {
         println()
         println("======= PERSONAL FINANCE TRACKER =======")
         println("\t1. Add Transaction")
@@ -36,49 +47,44 @@ class CommandLineInterface {
         print("Enter your choice: ")
     }
 
-     fun addTransaction(): Boolean {
-        println("\n=== Add Transaction ===")
+     private fun addTransaction(): Boolean {
+         addTransactionCalled = true
         // TODO: Implement transaction addition logic
-        println("Transaction added successfully!")
-         return true
+         return false
     }
 
-     fun viewAllTransactions() : List<Transaction>{
-        println("\n=== All Transactions ===")
+     private fun viewAllTransactions() : List<Transaction>{
+         viewAllTransactionsCalled = true
         // TODO: Implement transaction listing logic
-        println("No transactions available yet.")
          return listOf()
     }
 
-     fun editTransaction() : Boolean{
-        println("\n=== Edit Transaction ===")
+     private fun editTransaction() : Boolean{
+         editTransactionCalled = true
         // TODO: Implement transaction editing logic
-        println("Transaction edited successfully!")
-         return true
+         return false
     }
 
-     fun deleteTransaction(): Boolean {
-        println("\n=== Delete Transaction ===")
+     private fun deleteTransaction(): Boolean {
+         deleteTransactionCalled = true
         // TODO: Implement transaction deletion logic
-        println("Transaction deleted successfully!")
-         return true
+         return false
     }
 
-     fun viewMonthlySummary() : List<Transaction>{
-        println("\n=== Monthly Summary ===")
+     private fun viewMonthlySummary() : List<Transaction>{
+         viewMonthlySummaryCalled = true
         // TODO: Implement monthly summary logic
-        println("No summary available yet.")
          return listOf()
     }
 
-     fun viewCurrentBalance(): Double {
-        println("\n=== Current Balance ===")
+     private fun viewCurrentBalance(): Double {
+         viewCurrentBalanceCalled = true
         // TODO: Implement balance calculation logic
-        println("Current balance: \$0.00")
          return 0.00
     }
 
-     fun exit() {
+     private fun exit() {
+         exitCalled = true
         println("Exiting application... Goodbye!")
         exitProcess(0)
     }
