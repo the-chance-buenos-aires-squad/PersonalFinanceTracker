@@ -4,13 +4,11 @@ import model.Transaction
 import java.util.UUID
 
 
-
-class InMemoryTransactionsDataSource :TransactionDataSource{
+class InMemoryTransactionsDataSource : TransactionDataSource {
     val transactionList = mutableListOf<Transaction>()
 
     override fun addTransactions(transaction: Transaction): Boolean {
-       return transactionList.add(transaction)
-
+        return transactionList.add(transaction)
 
 
     }
@@ -25,7 +23,7 @@ class InMemoryTransactionsDataSource :TransactionDataSource{
     }
 
     override fun getTransactionById(id: UUID): Transaction? {
-        return transactionList.find { it.id==id}
+        return transactionList.find { it.id == id }
 
     }
 
