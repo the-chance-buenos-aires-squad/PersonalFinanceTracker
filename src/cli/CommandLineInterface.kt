@@ -1,17 +1,9 @@
 package cli
 
 import model.Transaction
-import java.util.*
 import kotlin.system.exitProcess
 
 class CommandLineInterface {
-    var addTransactionCalled = false
-    var viewAllTransactionsCalled = false
-    var editTransactionCalled = false
-    var deleteTransactionCalled = false
-    var viewMonthlySummaryCalled = false
-    var viewCurrentBalanceCalled = false
-    var exitCalled = false
 
     fun start() {
         while (true) {
@@ -48,43 +40,36 @@ class CommandLineInterface {
     }
 
      private fun addTransaction(): Boolean {
-         addTransactionCalled = true
         // TODO: Implement transaction addition logic
          return false
     }
 
      private fun viewAllTransactions() : List<Transaction>{
-         viewAllTransactionsCalled = true
         // TODO: Implement transaction listing logic
          return listOf()
     }
 
      private fun editTransaction() : Boolean{
-         editTransactionCalled = true
         // TODO: Implement transaction editing logic
          return false
     }
 
      private fun deleteTransaction(): Boolean {
-         deleteTransactionCalled = true
         // TODO: Implement transaction deletion logic
          return false
     }
 
      private fun viewMonthlySummary() : List<Transaction>{
-         viewMonthlySummaryCalled = true
         // TODO: Implement monthly summary logic
          return listOf()
     }
 
      private fun viewCurrentBalance(): Double {
-         viewCurrentBalanceCalled = true
         // TODO: Implement balance calculation logic
          return 0.00
     }
 
      private fun exit() {
-         exitCalled = true
         println("Exiting application... Goodbye!")
         exitProcess(0)
     }
