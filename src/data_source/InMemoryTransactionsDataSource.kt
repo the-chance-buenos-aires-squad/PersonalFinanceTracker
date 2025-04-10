@@ -19,12 +19,10 @@ class InMemoryTransactionsDataSource :TransactionDataSource{
         return transactionList.removeIf { it.id == id }
     }
 
-    // Need to negotiation
     override fun updateTransaction(transaction: Transaction): Boolean {
-        val existingTransaction = transactionList.find { it.id == transaction.id }
-        return if (existingTransaction != null) {
-            val index = transactionList.indexOf(existingTransaction)
-            transactionList[index] = transaction
+        val indexOfExistingTransaction = transactionList.indexOfFirst { it.id == transaction.id  }
+        return if (indexOfExistingTransaction != -1) {
+            transactionList[indexOfExistingTransaction] = transaction
             true
         } else {
             false

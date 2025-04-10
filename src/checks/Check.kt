@@ -46,11 +46,10 @@ fun main() {
         correctResult = false
     )
 
-    // Need to negotiation
     check(
-        message = "Update transaction should return true",
+        message = "Update non added transaction should return false",
         result = dataSource.updateTransaction(transaction2),
-        correctResult = true
+        correctResult = false
     )
 
     check(
