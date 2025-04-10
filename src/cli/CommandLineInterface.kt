@@ -69,6 +69,22 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
             println("✅ Transaction added successfully!")
 
     }
+    fun viewTransactions() {
+        val transactions = transactionManager.getAllTransactions()
+
+        if (transactions.isEmpty()) {
+            println("No transactions found.")
+            return
+        }
+
+        println("===== VIEW ALL TRANSACTIONS =====")
+        println("ID | Date | Amount | Category | Type")
+        println("-------------------------------------------------------------")
+
+        for (t in transactions) {
+            println("${t.id} | ${t.date} | ${t.amount} | ${t.transactionCategory.name.capitalize()} | ${t.type.name.capitalize()}")
+        }
+    }
 
 }
 
