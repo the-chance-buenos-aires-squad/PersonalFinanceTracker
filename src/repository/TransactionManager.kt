@@ -36,7 +36,6 @@ class TransactionManager(private val dataSource: TransactionDataSource) {
         }
         val highestIncome: Transaction? = incomeList.maxByOrNull { it.amount }
         val highestExpense: Transaction? = expanseList.maxByOrNull { it.amount }
-        if (expanseList.isNotEmpty()) expanseList.maxBy { it.amount }
         var topIncomeCategory: TopCategory? = null
         var topExpenseCategory: TopCategory? = null
         if (highestIncome != null) {

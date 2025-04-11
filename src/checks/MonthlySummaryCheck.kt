@@ -10,7 +10,7 @@ fun main() {
     dataSource.addTransactions(
         Transaction(
             amount = 20000.0,
-            type = TransactionType.EXPENSES,
+            type = TransactionType.INCOME,
             transactionCategory = TransactionCategory.SALARY,
             date = LocalDate.of(2025, 1, 1)
         )
@@ -18,7 +18,7 @@ fun main() {
     dataSource.addTransactions(
         Transaction(
             amount = 1000.0,
-            type = TransactionType.EXPENSES,
+            type = TransactionType.INCOME,
             transactionCategory = TransactionCategory.OTHER,
             date = LocalDate.of(2025, 1, 5)
         )
@@ -26,7 +26,7 @@ fun main() {
     dataSource.addTransactions(
         Transaction(
             amount = 1000.0,
-            type = TransactionType.EXPENSES,
+            type = TransactionType.INCOME,
             transactionCategory = TransactionCategory.OTHER,
             date = LocalDate.of(2025, 1, 10)
         )
@@ -47,6 +47,48 @@ fun main() {
             date = LocalDate.of(2025, 1, 20)
         )
     )
+    dataSource.addTransactions(
+        Transaction(
+            amount = 20000.0,
+            type = TransactionType.INCOME,
+            transactionCategory = TransactionCategory.SALARY,
+            date = LocalDate.of(2025, 3, 1)
+        )
+    )
+    dataSource.addTransactions(
+        Transaction(
+            amount = 1000.0,
+            type = TransactionType.INCOME,
+            transactionCategory = TransactionCategory.OTHER,
+            date = LocalDate.of(2025, 3, 5)
+        )
+    )
+    dataSource.addTransactions(
+        Transaction(
+            amount = 1000.0,
+            type = TransactionType.INCOME,
+            transactionCategory = TransactionCategory.OTHER,
+            date = LocalDate.of(2025, 3, 10)
+        )
+    )
+    dataSource.addTransactions(
+        Transaction(
+            amount = 8000.0,
+            type = TransactionType.EXPENSES,
+            transactionCategory = TransactionCategory.RENT,
+            date = LocalDate.of(2025, 5, 14)
+        )
+    )
+    dataSource.addTransactions(
+        Transaction(
+            amount = 500.0,
+            type = TransactionType.EXPENSES,
+            transactionCategory = TransactionCategory.TRANSPORT,
+            date = LocalDate.of(2025, 5, 20)
+        )
+    )
+
+
     val manager = TransactionManager(dataSource)
     val memoryTransactionsDataSource = dataSource.getAllTransactions()
     check(
@@ -54,20 +96,26 @@ fun main() {
         manager.getMonthlySummaryReport(1) == MonthlySummary(
             totalIncome = 22000.0,
             totalExpense = 8500.0,
-            incomeList = memoryTransactionsDataSource.filter { it.type == TransactionType.INCOME },
-            expenseList = memoryTransactionsDataSource.filter { it.type == TransactionType.EXPENSES },
+            incomeList = memoryTransactionsDataSource.filter {
+                it.type == TransactionType.INCOME && it.date.monthValue == 1 && it.date.year == LocalDate.now().year
+            },
+            expenseList = memoryTransactionsDataSource.filter {
+                it.type == TransactionType.EXPENSES && it.date.monthValue == 1 && it.date.year == LocalDate.now().year
+            },
             highestIncomeCategory = TopCategory(20000.0, TransactionCategory.SALARY),
             highestExpenseCategory = TopCategory(8000.0, TransactionCategory.RENT)
-        ), true
+        ),
+        true
 
     )
     check(
-        "When Valid Month but no expense" +
-                "It Should return MonthlySummary empty expenseList and highestExpendCategory null",
-        manager.getMonthlySummaryReport(1) == MonthlySummary(
+        "When Valid Month but no expense" + "It Should return MonthlySummary empty expenseList and highestExpendCategory null",
+        manager.getMonthlySummaryReport(3) == MonthlySummary(
             totalIncome = 22000.0,
             totalExpense = 0.0,
-            incomeList = memoryTransactionsDataSource.filter { it.type == TransactionType.INCOME },
+            incomeList = memoryTransactionsDataSource.filter {
+                it.type == TransactionType.INCOME && it.date.monthValue == 3 && it.date.year == LocalDate.now().year
+            },
             expenseList = listOf(),
             highestIncomeCategory = TopCategory(20000.0, TransactionCategory.SALARY),
             highestExpenseCategory = null
@@ -76,13 +124,15 @@ fun main() {
 
     )
     check(
-        "When Valid Month but no Income" +
-                "It Should return MonthlySummary empty incomeList and highestIncomeCategory null",
-        manager.getMonthlySummaryReport(1) == MonthlySummary(
+        "When Valid Month but no Income" + "It Should return MonthlySummary empty incomeList and highestIncomeCategory null",
+        manager.getMonthlySummaryReport(5) == MonthlySummary(
             totalIncome = 0.0,
             totalExpense = 8500.0,
             incomeList = listOf(),
-            expenseList = memoryTransactionsDataSource.filter { it.type == TransactionType.EXPENSES },
+            expenseList = memoryTransactionsDataSource.filter {
+                it.type == TransactionType.EXPENSES && it.date.monthValue == 5
+                        && it.date.year == LocalDate.now().year
+            },
             highestIncomeCategory = null,
             highestExpenseCategory = TopCategory(8000.0, TransactionCategory.RENT)
         ),
