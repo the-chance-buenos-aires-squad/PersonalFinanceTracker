@@ -108,8 +108,20 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
 
 
     private fun viewAllTransactions() : List<Transaction>{
-        // TODO: Implement transaction listing logic
-         return listOf()
+            val transactions = transactionManager.getAllTransactions()
+
+            if (transactions.isEmpty()) {
+                println("No transactions found.")
+            } else {
+                println("===== VIEW ALL TRANSACTIONS =====")
+                println("ID | Date | Amount | Category | Type")
+                println("-------------------------------------------------------------")
+                transactions.forEach {
+                    println("${it.id} | ${it.date} | ${it.amount} | ${it.transactionCategory.name.lowercase().replaceFirstChar { c -> c.uppercase() }} | ${it.type.name.lowercase().replaceFirstChar { c -> c.uppercase() }}")
+                }
+            }
+
+            return transactions
     }
 
      private fun editTransaction() : Boolean{
