@@ -1,26 +1,28 @@
 package data_source
 
 import model.Transaction
-import java.util.UUID
+import model.toFileString
+import util.TransactionsFile
+import java.util.*
 
-class InMemoryTransactionsDataSource : TransactionDataSource {
-    private val transactionList = mutableListOf<Transaction>()
+class FileBasedTransactionsDataSource(
+    private val transactionsFile: TransactionsFile
+) : TransactionDataSource {
 
     override fun addTransactions(transaction: Transaction): Boolean {
-        return transactionList.add(transaction)
+        return transactionsFile.appendToFile(transaction.toFileString())
     }
-
 
     override fun deleteTransaction(id: UUID): Boolean {
         TODO("Not yet implemented")
     }
 
     override fun getAllTransactions(): List<Transaction> {
-        return transactionList
+        TODO("Not yet implemented")
     }
 
     override fun getTransactionById(id: UUID): Transaction? {
-        return transactionList.find { it.id == id }
+        TODO("Not yet implemented")
     }
 
     override fun updateTransaction(transaction: Transaction): Boolean {
