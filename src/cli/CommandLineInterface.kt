@@ -105,11 +105,35 @@ class CommandLineInterface() {
 
 
     private fun deleteTransaction(): Boolean {
-        // TODO: Implement transaction deletion logic
-         return false
+        println("===== DELETE TRANSACTION =====")
+        print("Enter transaction ID: ")
+        val idInput = scanner.nextLine()
+        val id = idInput.toUUIDOrNull()
+
+        if (id == null) {
+            println("❌ Invalid ID format.")
+            return false
+        }
+
+        val transaction = transactionManager.getTransactionById(id)
+        if (transaction == null) {
+            println("❌ Transaction not found.")
+            return false
+        }
+
+        val deleted = transactionManager.deleteTransaction(id)
+        if (deleted) {
+            println("✅ Transaction deleted successfully.")
+            return true
+        } else {
+            println("❌ Failed to delete transaction.")
+            return false
+        }
     }
 
-     private fun viewMonthlySummary() : List<Transaction>{
+
+
+    private fun viewMonthlySummary() : List<Transaction>{
         // TODO: Implement monthly summary logic
          return listOf()
     }
