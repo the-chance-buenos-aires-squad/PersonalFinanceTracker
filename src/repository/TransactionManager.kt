@@ -8,17 +8,17 @@ public class TransactionManager (val dataSource: TransactionDataSource){
 
 
     fun addTransaction(transaction: Transaction): Boolean{
-        TODO()
+        return dataSource.addTransactions(transaction)
     }
 
 // getAll getBy all data source functions
 
 
     fun getAllTransactions(): List<Transaction> {
-       TODO()
+        return dataSource.getAllTransactions()
     }
     fun getTransactionById(id: UUID): Transaction?{
-      TODO()
+        return dataSource.getTransactionById(UUID.randomUUID())
     }
 
 
