@@ -4,12 +4,15 @@ import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
 import repository.TransactionManager
+import util.Validator
 import java.util.*
 import kotlin.system.exitProcess
 import util.toUUIDOrNull
 
 
 class CommandLineInterface() {
+    private val validator = Validator()
+
 
 
     fun start() {
@@ -59,19 +62,14 @@ class CommandLineInterface() {
     private fun editTransaction(): Boolean {
         println("===== EDIT TRANSACTION =====")
         print("Enter transaction ID: ")
-        val idInput = scanner.nextLine()
-        val id = idInput.toUUIDOrNull()
+        val id = validator.isValidUUID(scanner.nextLine())
 
-        if (id == null) {
-            println("❌ Invalid ID format.")
+        if (!validator.transactionExists(id) { transactionManager.getTransactionById(it) != null }) {
+            println("❌ Invalid or nonexistent transaction ID.")
             return false
         }
 
-        val existing = transactionManager.getTransactionById(id)
-        if (existing == null) {
-            println("❌ Transaction not found.")
-            return false
-        }
+        val existing = transactionManager.getTransactionById(id!!) // safe because of the check above
 
         val tempTransaction = addTransaction(
             defaultAmount = existing.amount,
@@ -79,25 +77,21 @@ class CommandLineInterface() {
             defaultCategory = existing.transactionCategory
         )
 
-        // Because addTransaction() returns Boolean, this check must be simplified
         if (!tempTransaction) {
             println("❌ Transaction update canceled.")
             return false
         }
 
-        // You'll need to fetch the last transaction added
         val all = transactionManager.getAllTransactions()
         val last = all.lastOrNull() ?: return false
         val updatedTransaction = last.copy(id = existing.id, date = existing.date)
 
-        val success = transactionManager.updateTransaction(updatedTransaction)
-
-        if (success) {
+        return if (transactionManager.updateTransaction(updatedTransaction)) {
             println("✅ Transaction updated successfully.")
-            return true
+            true
         } else {
             println("❌ Failed to update transaction.")
-            return false
+            false
         }
     }
 
