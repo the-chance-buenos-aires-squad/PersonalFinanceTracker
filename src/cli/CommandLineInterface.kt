@@ -101,29 +101,22 @@ class CommandLineInterface() {
     private fun deleteTransaction(): Boolean {
         println("===== DELETE TRANSACTION =====")
         print("Enter transaction ID: ")
-        val idInput = scanner.nextLine()
-        val id = idInput.toUUIDOrNull()
+        val id = validator.isValidUUID(scanner.nextLine())
 
-        if (id == null) {
-            println("❌ Invalid ID format.")
+        if (!validator.transactionExists(id) { transactionManager.getTransactionById(it) != null }) {
+            println("❌ Invalid or nonexistent transaction ID.")
             return false
         }
 
-        val transaction = transactionManager.getTransactionById(id)
-        if (transaction == null) {
-            println("❌ Transaction not found.")
-            return false
-        }
-
-        val deleted = transactionManager.deleteTransaction(id)
-        if (deleted) {
+        return if (transactionManager.deleteTransaction(id!!)) {
             println("✅ Transaction deleted successfully.")
-            return true
+            true
         } else {
             println("❌ Failed to delete transaction.")
-            return false
+            false
         }
     }
+
 
 
 
