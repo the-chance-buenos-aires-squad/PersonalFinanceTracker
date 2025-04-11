@@ -8,7 +8,7 @@ import model.TransactionType
 import java.time.LocalDate
 import java.util.*
 
-public class TransactionManager (val dataSource: TransactionDataSource){
+class TransactionManager(private val dataSource: TransactionDataSource) {
 
     fun getMonthlySummaryReport(month: Int, year: Int = LocalDate.now().year): MonthlySummary? {
         val allTransactions = dataSource.getAllTransactions()
@@ -46,14 +46,16 @@ public class TransactionManager (val dataSource: TransactionDataSource){
             expenseList = expanseList,
             highestIncomeCategory = topIncomeCategory,
             highestExpenseCategory = topExpenseCategory
+        )
+    }
 
     fun getAllTransactions(): List<Transaction> {
         return dataSource.getAllTransactions()
     }
-    fun getTransactionById(id: UUID): Transaction?{
+
+
+    fun getTransactionById(id: UUID): Transaction? {
         return dataSource.getTransactionById(UUID.randomUUID())
-    }
-        )
     }
 
     fun addTransaction(transaction: Transaction): Boolean = dataSource.addTransactions(transaction)

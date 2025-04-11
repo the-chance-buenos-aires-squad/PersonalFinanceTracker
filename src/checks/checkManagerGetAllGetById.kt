@@ -8,7 +8,7 @@ import repository.TransactionManager
 import java.time.LocalDate
 import java.util.*
 
-fun checkManagerGetAllGetById (){
+fun checkManagerGetAllGetById() {
     val dataSource = InMemoryTransactionsDataSource()
     val transactionManager = TransactionManager(dataSource)
     dataSource.addTransactions(
@@ -62,8 +62,8 @@ fun checkManagerGetAllGetById (){
     )
 
 
-    val emptyDataSource= InMemoryTransactionsDataSource()
-    val secondTransaction= TransactionManager(emptyDataSource)
+    val emptyDataSource = InMemoryTransactionsDataSource()
+    val secondTransaction = TransactionManager(emptyDataSource)
     check(
         message = "when transactions is empty should return true",
         result = secondTransaction.getAllTransactions().isEmpty(),
@@ -71,13 +71,7 @@ fun checkManagerGetAllGetById (){
     )
 
 
-
-
-
-
-
-
-    val retrievedTransaction = dataSource.getTransactionById(UUID.randomUUID())
+    val retrievedTransaction = transactionManager.getTransactionById(UUID.randomUUID())
 
     check(
         message = "Retrieving by invalid ID should return null",
