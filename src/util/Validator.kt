@@ -1,5 +1,7 @@
 package util
 
+import java.util.*
+
 class Validator {
     fun notOutOfRang(n:Int, rang:Int):Boolean{
         TODO("n should be in rang")
@@ -16,5 +18,5 @@ class Validator {
     fun amountIsValid(amount:String):Boolean{
         TODO("the amount should be")
     }
-
 }
+fun String.toUUIDOrNull(): UUID? = runCatching { UUID.fromString(this) }.getOrNull()
