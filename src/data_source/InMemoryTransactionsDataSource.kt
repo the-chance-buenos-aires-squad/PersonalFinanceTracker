@@ -8,6 +8,7 @@ import java.util.UUID
 
 class InMemoryTransactionsDataSource : TransactionDataSource {
     private val transactionList = mutableListOf<Transaction>()
+    private val fileSource = TransactionsFile()
 
     override fun addTransactions(transaction: Transaction): Boolean {
         return transactionList.add(transaction)
@@ -31,4 +32,3 @@ class InMemoryTransactionsDataSource : TransactionDataSource {
     }
 
 }
-
