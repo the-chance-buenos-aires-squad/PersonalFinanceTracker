@@ -8,5 +8,5 @@ data class Transaction(
     val amount: Double,
     val transactionCategory: TransactionCategory,
     val type: TransactionType,
-    val date: LocalDate
+    val date: LocalDate = LocalDate.now()
 )
