@@ -9,7 +9,7 @@ import java.util.*
 import kotlin.system.exitProcess
 
 class CommandLineInterface(private val transactionManager: TransactionManager) {
-        private val scanner =Scanner(System.`in`)
+    private val scanner = Scanner(System.`in`)
     fun start() {
         while (true) {
             displayMenu()
@@ -30,7 +30,7 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
         }
     }
 
-      private fun displayMenu() {
+    private fun displayMenu() {
         println()
         println("======= PERSONAL FINANCE TRACKER =======")
         println("\t1. Add Transaction")
@@ -109,48 +109,47 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
     }
 
 
+    private fun viewAllTransactions(): List<Transaction> {
+        val transactions = transactionManager.getAllTransactions()
 
-
-
-
-    private fun viewAllTransactions() : List<Transaction>{
-            val transactions = transactionManager.getAllTransactions()
-
-            if (transactions.isEmpty()) {
-                println("No transactions found.")
-            } else {
-                println("===== VIEW ALL TRANSACTIONS =====")
-                println("ID | Date | Amount | Category | Type")
-                println("-------------------------------------------------------------")
-                transactions.forEach {
-                    println("${it.id} | ${it.date} | ${it.amount} | ${it.transactionCategory.name.lowercase().replaceFirstChar { c -> c.uppercase() }} | ${it.type.name.lowercase().replaceFirstChar { c -> c.uppercase() }}")
-                }
+        if (transactions.isEmpty()) {
+            println("No transactions found.")
+        } else {
+            println("===== VIEW ALL TRANSACTIONS =====")
+            println("ID | Date | Amount | Category | Type")
+            println("-------------------------------------------------------------")
+            transactions.forEach {
+                println(
+                    "${it.id} | ${it.date} | ${it.amount} | ${
+                        it.transactionCategory.name.lowercase().replaceFirstChar { c -> c.uppercase() }
+                    } | ${it.type.name.lowercase().replaceFirstChar { c -> c.uppercase() }}"
+                )
             }
+        }
 
-            return transactions
+        return transactions
     }
 
-     private fun editTransaction() : Boolean{
+    private fun editTransaction(): Boolean {
         // TODO: Implement transaction editing logic
-         return false
+        return false
     }
 
-     private fun deleteTransaction(): Boolean {
+    private fun deleteTransaction(): Boolean {
         // TODO: Implement transaction deletion logic
-         return false
+        return false
     }
 
-     private fun viewMonthlySummary() : List<Transaction>{
+    private fun viewMonthlySummary(): List<Transaction> {
         // TODO: Implement monthly summary logic
-         return listOf()
+        return listOf()
     }
 
-     private fun viewCurrentBalance(): Double {
-        // TODO: Implement balance calculation logic
-         return 0.00
+    private fun viewCurrentBalance(): String {
+        return "Total Balance: ${transactionManager.getBalance()}"
     }
 
-     private fun exit() {
+    private fun exit() {
         println("Exiting application... Goodbye!")
         exitProcess(0)
     }
