@@ -19,5 +19,12 @@ class Validator {
         val number = amount.toDoubleOrNull()
         return number != null && number >= 0
     }
+    fun isValidUUID(input: String): UUID? {
+        return input.toUUIDOrNull()
+    }
+
+    fun transactionExists(id: UUID?, fetcher: (UUID) -> Boolean): Boolean {
+        return id != null && fetcher(id)
+    }
 }
 fun String.toUUIDOrNull(): UUID? = runCatching { UUID.fromString(this) }.getOrNull()
