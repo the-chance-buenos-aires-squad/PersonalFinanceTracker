@@ -9,9 +9,9 @@ import java.time.LocalDate
 import java.util.*
 
 fun main() {
-    checkManagerGetAllGetById()
-    runBalanceChecks()
-
+//    checkManagerGetAllGetById()
+//    runBalanceChecks()
+    validationChecks()
 }
 
 fun check(
