@@ -44,19 +44,26 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
         print("Enter your choice: ")
     }
 
-    private fun addTransaction(): Boolean {
-        println("===== ADD TRANSACTION =====")
+    private fun addTransaction(
+        defaultAmount: Double? = null,
+        defaultType: TransactionType? = null,
+        defaultCategory: TransactionCategory? = null
+    ): Boolean {
+        println("===== ${if (defaultAmount != null) "EDIT" else "ADD"} TRANSACTION =====")
 
+        // Amount
         var amount: Double? = null
         while (amount == null) {
-            print("Enter amount: ")
+            print("Enter amount${if (defaultAmount != null) " (default: $defaultAmount)" else ""}: ")
             val input = scanner.nextLine()
-            amount = input.toDoubleOrNull()
+            amount = input.toDoubleOrNull() ?: defaultAmount
             if (amount == null || amount <= 0) {
-                println("Invalid amount. Please enter a valid number.")
+                println("❌ Invalid amount. Please enter a valid number.")
+                amount = null
             }
         }
 
+        // Transaction type
         println("Choose transaction type:")
         val types = TransactionType.values()
         types.forEachIndexed { index, type ->
@@ -65,15 +72,14 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
 
         var type: TransactionType? = null
         while (type == null) {
-            print("Your choice (1-${types.size}): ")
-            val input = scanner.nextLine().toIntOrNull()
-            if (input != null && input in 1..types.size) {
-                type = types[input - 1]
-            } else {
-                println("Invalid choice.")
-            }
+            print("Your choice (or press Enter to keep ${defaultType ?: "none"}): ")
+            val input = scanner.nextLine()
+            type = if (input.isBlank()) defaultType
+            else input.toIntOrNull()?.let { if (it in 1..types.size) types[it - 1] else null }
+            if (type == null) println("❌ Invalid type.")
         }
 
+        // Category
         println("Choose category:")
         val categories = TransactionCategory.values()
         categories.forEachIndexed { index, cat ->
@@ -82,13 +88,12 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
 
         var category: TransactionCategory? = null
         while (category == null) {
-            print("Your choice (1-${categories.size}): ")
-            val input = scanner.nextLine().toIntOrNull()
-            if (input != null && input in 1..categories.size) {
-                category = categories[input - 1]
-            } else {
-                println("Invalid choice.")
-            }
+            print("Your choice (or press Enter to keep ${defaultCategory ?: "none"}): ")
+            val input = scanner.nextLine()
+            category = if (input.isBlank()) defaultCategory
+            else input.toIntOrNull()?.let { if (it in 1..categories.size) categories[it - 1] else null }
+            if (category == null)
+                println("❌ Invalid category.")
         }
 
         val transaction = Transaction(
@@ -102,6 +107,7 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
         println("✅ Transaction added successfully!")
         return true
     }
+
 
 
 
