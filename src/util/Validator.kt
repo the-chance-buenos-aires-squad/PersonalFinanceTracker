@@ -10,7 +10,7 @@ class Validator {
     }
 
     fun yearIsValid(year:Int):Boolean{
-        return (year < 2025)
+        return (year < 2026)
     }
 
     fun amountIsValid(amount:String): Boolean {
