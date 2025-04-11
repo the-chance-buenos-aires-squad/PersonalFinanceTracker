@@ -4,6 +4,8 @@ import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
 import repository.TransactionManager
+import util.displayOnScreen
+import java.time.LocalDate
 import util.Validator
 import java.util.*
 import kotlin.system.exitProcess
@@ -14,7 +16,8 @@ class CommandLineInterface() {
     private val validator = Validator()
 
 
-
+class CommandLineInterface(private val transactionManager: TransactionManager) {
+    private val scanner = Scanner(System.`in`)
     fun start() {
         while (true) {
             displayMenu()
@@ -22,7 +25,7 @@ class CommandLineInterface() {
         }
     }
 
-    fun handleUserInput(input: String?) {
+    private fun handleUserInput(input: String?) {
         when (input?.trim()) {
             "1" -> addTransaction()
             "2" -> viewAllTransactions()
@@ -35,7 +38,7 @@ class CommandLineInterface() {
         }
     }
 
-      private fun displayMenu() {
+    private fun displayMenu() {
         println()
         println("======= PERSONAL FINANCE TRACKER =======")
         println("\t1. Add Transaction")
@@ -54,9 +57,27 @@ class CommandLineInterface() {
          return false
     }
 
-     private fun viewAllTransactions() : List<Transaction>{
-        // TODO: Implement transaction listing logic
-         return listOf()
+
+    private fun viewAllTransactions(): List<Transaction> {
+        val transactions = transactionManager.getAllTransactions()
+
+        if (transactions.isEmpty()) {
+            println("No transactions found.")
+        } else {
+//            println("===== VIEW ALL TRANSACTIONS =====")
+//            println("ID | Date | Amount | Category | Type")
+//            println("-------------------------------------------------------------")
+//            transactions.forEach {
+//                println(
+//                    "${it.id} | ${it.date} | ${it.amount} | ${
+//                        it.transactionCategory.name.lowercase().replaceFirstChar { c -> c.uppercase() }
+//                    } | ${it.type.name.lowercase().replaceFirstChar { c -> c.uppercase() }}"
+//                )
+//            }
+            transactions.displayOnScreen()
+        }
+
+        return transactions
     }
 
     private fun editTransaction(): Boolean {
@@ -122,15 +143,14 @@ class CommandLineInterface() {
 
     private fun viewMonthlySummary() : List<Transaction>{
         // TODO: Implement monthly summary logic
-         return listOf()
+        return listOf()
     }
 
-     private fun viewCurrentBalance(): Double {
-        // TODO: Implement balance calculation logic
-         return 0.00
+    private fun viewCurrentBalance(): String {
+        return "Total Balance: ${transactionManager.getBalance()}"
     }
 
-     private fun exit() {
+    private fun exit() {
         println("Exiting application... Goodbye!")
         exitProcess(0)
     }

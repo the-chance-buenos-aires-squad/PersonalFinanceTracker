@@ -1,21 +1,32 @@
 package data_source
 
 import model.Transaction
-import model.TransactionCategory
-import model.TransactionType
-import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 
 class InMemoryTransactionsDataSource : TransactionDataSource {
     private val transactionList = mutableListOf<Transaction>()
 
     override fun addTransactions(transaction: Transaction): Boolean {
-        return transactionList.add(transaction)
+        return if (transactionList.any { it.id == transaction.id }) {
+            false
+        } else {
+            transactionList.add(transaction)
+            true
+        }
     }
 
-
     override fun deleteTransaction(id: UUID): Boolean {
-        TODO("Not yet implemented")
+        return transactionList.removeIf { it.id == id }
+    }
+
+    override fun updateTransaction(transaction: Transaction): Boolean {
+        val indexOfExistingTransaction = transactionList.indexOfFirst { it.id == transaction.id }
+        return if (indexOfExistingTransaction != -1) {
+            transactionList[indexOfExistingTransaction] = transaction
+            true
+        } else {
+            false
+        }
     }
 
     override fun getAllTransactions(): List<Transaction> {
@@ -25,10 +36,4 @@ class InMemoryTransactionsDataSource : TransactionDataSource {
     override fun getTransactionById(id: UUID): Transaction? {
         return transactionList.find { it.id == id }
     }
-
-    override fun updateTransaction(transaction: Transaction): Boolean {
-        TODO("Not yet implemented")
-    }
-
 }
-
