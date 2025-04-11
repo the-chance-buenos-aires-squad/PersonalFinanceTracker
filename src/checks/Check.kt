@@ -5,7 +5,6 @@ import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
 import repository.TransactionManager
-import java.time.LocalDate
 import java.util.*
 import java.time.LocalDate
 

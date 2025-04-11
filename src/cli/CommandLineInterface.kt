@@ -4,6 +4,7 @@ import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
 import repository.TransactionManager
+import util.displayOnScreen
 import java.time.LocalDate
 import java.util.*
 import kotlin.system.exitProcess
@@ -17,7 +18,7 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
         }
     }
 
-    fun handleUserInput(input: String?) {
+    private fun handleUserInput(input: String?) {
         when (input?.trim()) {
             "1" -> addTransaction()
             "2" -> viewAllTransactions()
@@ -115,16 +116,17 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
         if (transactions.isEmpty()) {
             println("No transactions found.")
         } else {
-            println("===== VIEW ALL TRANSACTIONS =====")
-            println("ID | Date | Amount | Category | Type")
-            println("-------------------------------------------------------------")
-            transactions.forEach {
-                println(
-                    "${it.id} | ${it.date} | ${it.amount} | ${
-                        it.transactionCategory.name.lowercase().replaceFirstChar { c -> c.uppercase() }
-                    } | ${it.type.name.lowercase().replaceFirstChar { c -> c.uppercase() }}"
-                )
-            }
+//            println("===== VIEW ALL TRANSACTIONS =====")
+//            println("ID | Date | Amount | Category | Type")
+//            println("-------------------------------------------------------------")
+//            transactions.forEach {
+//                println(
+//                    "${it.id} | ${it.date} | ${it.amount} | ${
+//                        it.transactionCategory.name.lowercase().replaceFirstChar { c -> c.uppercase() }
+//                    } | ${it.type.name.lowercase().replaceFirstChar { c -> c.uppercase() }}"
+//                )
+//            }
+            transactions.displayOnScreen()
         }
 
         return transactions
