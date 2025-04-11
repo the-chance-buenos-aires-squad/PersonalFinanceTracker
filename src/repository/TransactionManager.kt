@@ -10,11 +10,6 @@ import java.util.*
 
 class TransactionManager(private val dataSource: TransactionDataSource) {
 
-// add delete update
-
-
-// getAll getBy all data source functions
-
     fun getMonthlySummaryReport(month: Int, year: Int = LocalDate.now().year): MonthlySummary? {
         val allTransactions = dataSource.getAllTransactions()
         val monthlyTransaction = allTransactions.filter { it.date.monthValue == month && it.date.year == year }
@@ -51,8 +46,16 @@ class TransactionManager(private val dataSource: TransactionDataSource) {
             expenseList = expanseList,
             highestIncomeCategory = topIncomeCategory,
             highestExpenseCategory = topExpenseCategory
-
         )
+    }
+
+    fun getAllTransactions(): List<Transaction> {
+        return dataSource.getAllTransactions()
+    }
+
+
+    fun getTransactionById(id: UUID): Transaction? {
+        return dataSource.getTransactionById(UUID.randomUUID())
     }
 
     fun addTransaction(transaction: Transaction): Boolean = dataSource.addTransactions(transaction)
@@ -67,3 +70,4 @@ class TransactionManager(private val dataSource: TransactionDataSource) {
     }
 
 }
+
