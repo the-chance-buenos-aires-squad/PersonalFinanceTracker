@@ -9,27 +9,4 @@ data class Transaction(
     val transactionCategory: TransactionCategory,
     val type: TransactionType,
     val date: LocalDate = LocalDate.now()
-) {
-    fun toFileString(): String {
-        return listOf(
-            id.toString(),
-            amount.toString(),
-            transactionCategory.name,
-            type.name,
-            date.toString()
-        ).joinToString("|")
-    }
-
-    companion object {
-        fun fromFileString(transactionText: String): Transaction {
-            val parts = transactionText.split("|")
-            return Transaction(
-                id = UUID.fromString(parts[0]),
-                amount = parts[1].toDouble(),
-                transactionCategory = TransactionCategory.valueOf(parts[2]),
-                type = TransactionType.valueOf(parts[3]),
-                date = LocalDate.parse(parts[4])
-            )
-        }
-    }
-}
+)
