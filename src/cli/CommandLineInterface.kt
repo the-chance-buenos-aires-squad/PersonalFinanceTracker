@@ -1,6 +1,7 @@
 package cli
 
 import data_source.TransactionDataSource
+import jdk.jshell.execution.Util
 import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
@@ -40,7 +41,8 @@ class CommandLineInterface(
     }
 
     private fun displayMenu() {
-        println("""
+        println(
+            """
             
             ======= PERSONAL FINANCE TRACKER =======
             	1. Add Transaction
@@ -52,7 +54,8 @@ class CommandLineInterface(
                 7. Exit
             =======================================
             Enter your choice: 
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     //region  addTransaction
@@ -171,9 +174,9 @@ class CommandLineInterface(
             type = newType,
             transactionCategory = newCategory
         )
-        transactionManager.updateTransaction(index, updatedTransaction)
-        println("Transaction Updated successfully!\n")
-        singleTransaction(updatedTransaction)
+
+        transactionManager.updateTransaction(updatedTransaction)
+        println("Transaction Updated successfully!")
     }
 
     private fun chooseTransactionType(default: TransactionType): TransactionType {
@@ -183,7 +186,7 @@ class CommandLineInterface(
         }
         print("Your choice (or press Enter to keep none) : ")
         val input = readLine()
-        return validator.getValidTransactionTypeFromInput(input) ?: default
+        return getValidTransactionTypeFromInput(input) ?: default
     }
 
     private fun chooseTransactionCategory(default: TransactionCategory): TransactionCategory {
@@ -193,7 +196,7 @@ class CommandLineInterface(
         }
         print("Your choice (or press Enter to keep none) : ")
         val input = readLine()
-        return validator.getValidCategoryFromInput(input) ?: default
+        return getValidCategoryFromInput(input) ?: default
     }
 
     private fun enterTransactionAmount(selectedTransaction: Transaction): Double {
