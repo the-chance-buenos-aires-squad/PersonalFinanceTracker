@@ -4,7 +4,7 @@ import java.io.File
 
 const val FILE_NAME = "transactions_file.txt"
 
-class TransactionsFile {
+class TransactionsFileManager {
 
     private var file: File = File(FILE_NAME)
 
@@ -24,8 +24,16 @@ class TransactionsFile {
             return true
         }
         catch (e: Exception) {
-            file.createNewFile()
             return false
+        }
+    }
+
+    fun readLinesFromFile(): List<String> {
+        if(file.exists()) {
+            return file.readLines()
+        }
+        else {
+            return emptyList()
         }
     }
 }
