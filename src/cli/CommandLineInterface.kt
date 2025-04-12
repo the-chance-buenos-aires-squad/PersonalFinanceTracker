@@ -3,8 +3,9 @@ package cli
 import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
-import Manager.ReportManager
-import Manager.TransactionManager
+import manager.ReportManager
+import manager.TransactionManager
+import model.MonthlySummary
 import util.*
 import java.time.LocalDate
 import java.util.*
@@ -223,12 +224,8 @@ class CommandLineInterface(
     //region  viewMonthlySummary
     private fun viewMonthlySummary(): List<Transaction> {
         printSectionHeader("VIEW MONTHLY SUMMARY")
-        print("Enter year (e.g. 2025): ")
-        val yearInput = scanner.nextLine().toIntOrNull() ?: LocalDate.now().year
-
-        print("Enter month (1-12): ")
-        val monthInput = scanner.nextLine().toIntOrNull()
-
+        val yearInput = getYearInput()
+        val monthInput = getMonthInput()
 
         if (!validator.isValidYear(yearInput) || !validator.isValidMonth(monthInput)) {
             println("❌ Invalid year or month.")
@@ -240,7 +237,24 @@ class CommandLineInterface(
             println("⚠️ No transactions found for $monthInput/$yearInput.")
             return listOf()
         }
-        println("\n📊 Summary for $monthInput/$yearInput:")
+
+        printSummary(summary, monthInput, yearInput)
+        return emptyList()
+    }
+
+
+    private fun getYearInput(): Int {
+        print("Enter year (e.g. 2025 or press Enter to keep current year): ")
+        return scanner.nextLine().toIntOrNull() ?: LocalDate.now().year
+    }
+
+    private fun getMonthInput(): Int? {
+        print("Enter month (1-12): ")
+        return scanner.nextLine().toIntOrNull()
+    }
+
+    private fun printSummary(summary: MonthlySummary, month: Int, year: Int) {
+        println("\n📊 Summary for $month/$year:")
         println("Total Income: \$${summary.totalIncome}")
         println("Total Expense: \$${summary.totalExpense}")
         println("Net: \$${summary.totalIncome - summary.totalExpense}")
@@ -254,12 +268,11 @@ class CommandLineInterface(
         summary.highestExpenseCategory?.let {
             println("- ${it.category}: \$${it.amount}")
         } ?: println("- None")
-        return emptyList()
     }
     //endregion
 
-    private fun viewCurrentBalance(): String {
-        return "Total Balance: ${reportManager.getBalance()}"
+    private fun viewCurrentBalance() {
+        println("Total Balance: ${reportManager.getBalance()}")
     }
     //endregion
 

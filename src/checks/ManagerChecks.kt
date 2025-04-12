@@ -2,8 +2,8 @@ package checks
 
 import data_source.InMemoryTransactionsDataSource
 import model.*
-import Manager.ReportManager
-import Manager.TransactionManager
+import manager.ReportManager
+import manager.TransactionManager
 import java.time.LocalDate
 import java.util.*
 

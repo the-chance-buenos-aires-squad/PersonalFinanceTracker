@@ -42,7 +42,7 @@ src/
 
 ### Building the Project
 
-1. Clone the Manager
+1. Clone the manager
 2. Navigate to the project directory
 3. Build the project using your preferred build tool
 
@@ -65,7 +65,7 @@ The project includes validation checks in the `checks` directory to ensure prope
 
 ## Contributing
 
-1. Fork the Manager
+1. Fork the manager
 2. Create a feature branch
 3. Commit your changes
 4. Push to the branch

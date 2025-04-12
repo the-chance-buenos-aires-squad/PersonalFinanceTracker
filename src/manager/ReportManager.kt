@@ -1,4 +1,4 @@
-package Manager
+package manager
 
 import data_source.TransactionDataSource
 import model.MonthlySummary
@@ -24,8 +24,8 @@ class ReportManager(private val dataSource: TransactionDataSource) {
 
         val incomeList = mutableListOf<Transaction>()
         val expanseList = mutableListOf<Transaction>()
-        val totalIncome = calculateIncome(monthlyTransaction, month, incomeList)
-        val totalExpense = calculateExpense(monthlyTransaction, month, expanseList)
+        val totalIncome = calculateIncome(monthlyTransaction, incomeList)
+        val totalExpense = calculateExpense(monthlyTransaction, expanseList)
 
         val highestIncome = incomeList.maxByOrNull { it.amount }
         val highestExpense = expanseList.maxByOrNull { it.amount }
@@ -53,12 +53,11 @@ class ReportManager(private val dataSource: TransactionDataSource) {
 
     private fun calculateIncome(
         transactions: List<Transaction>,
-        month: Int,
         incomeList: MutableList<Transaction>
     ): Double {
         var totalIncome = 0.0
         transactions.forEach {
-            if (it.date.monthValue == month && it.type == TransactionType.INCOME) {
+            if (it.type == TransactionType.INCOME) {
                 incomeList.add(it)
                 totalIncome += it.amount
             }
@@ -68,12 +67,11 @@ class ReportManager(private val dataSource: TransactionDataSource) {
 
     private fun calculateExpense(
         transactions: List<Transaction>,
-        month: Int,
         expanseList: MutableList<Transaction>
     ): Double {
         var totalExpense = 0.0
         transactions.forEach {
-            if (it.date.monthValue == month && it.type != TransactionType.INCOME) {
+            if (it.type != TransactionType.EXPENSES) {
                 expanseList.add(it)
                 totalExpense += it.amount
             }
