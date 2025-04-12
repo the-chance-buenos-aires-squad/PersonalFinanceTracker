@@ -1,7 +1,10 @@
 package util
 
+import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
+import model.toFileString
+import java.time.LocalDate
 
 
 fun getValidTransactionTypeFromInput(input: String?): TransactionType? {
@@ -19,5 +22,13 @@ fun getValidCategoryFromInput(input: String?): TransactionCategory? {
     } else {
         return null
     }
+}
+
+fun transformTransactionsToTextLines(transactions: List<Transaction>): String {
+    var textLines = ""
+    transactions.forEach { transaction ->
+        textLines += transaction.toFileString() + "\n"
+    }
+    return textLines
 }
 
