@@ -1,5 +1,6 @@
 package util
 
+
 import model.TransactionCategory
 import model.TransactionType
 import java.util.*
@@ -13,8 +14,10 @@ class Validator {
         return (month in 1..12)
     }
 
-    fun yearIsValid(year: Int): Boolean {
-        return (year < 2026)
+    fun yearIsValid(year:Int):Boolean{
+        val currentYear = Year.now().value
+        return year != null && year in 1900..currentYear
+
     }
 
     fun amountIsValid(amount: String): Boolean {

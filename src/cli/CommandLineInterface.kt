@@ -144,9 +144,43 @@ class CommandLineInterface(
     //endregion
 
 
+
     private fun viewMonthlySummary(): List<Transaction> {
-        // TODO: Implement monthly summary logic
-        return listOf()
+        println("===== VIEW MONTHLY SUMMARY =====")
+
+        print("Enter year (e.g. 2025): ")
+        val yearInput = scanner.nextLine().toIntOrNull()
+
+        print("Enter month (1-12): ")
+        val monthInput = scanner.nextLine().toIntOrNull()
+
+        if (!validator.yearIsValid(yearInput) || !validator.monthIsValid(monthInput)) {
+            println("❌ Invalid year or month.")
+            return listOf()
+        }
+
+        val summary = transactionManager.getMonthlySummaryReport(monthInput!!, yearInput!!)
+        if (summary == null) {
+            println("⚠️ No transactions found for $monthInput/$yearInput.")
+            return listOf()
+        }
+        println("\n📊 Summary for $monthInput/$yearInput:")
+        println("Total Income: \$${summary.totalIncome}")
+        println("Total Expense: \$${summary.totalExpense}")
+        println("Net: \$${summary.totalIncome - summary.totalExpense}")
+
+        println("\n🔝 Highest Income Category:")
+        summary.highestIncomeCategory?.let {
+            println("- ${it.category}: \$${it.amount}")
+        } ?: println("- None")
+
+        println("\n🔝 Highest Expense Category:")
+        summary.highestExpenseCategory?.let {
+            println("- ${it.category}: \$${it.amount}")
+        } ?: println("- None")
+
+        return summary.incomeList + summary.expenseList
+
     }
 
     private fun viewCurrentBalance(): String {
