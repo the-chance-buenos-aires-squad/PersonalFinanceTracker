@@ -34,23 +34,6 @@ class Validator {
             return null
         }
     }
-
-    fun getValidTransactionTypeFromInput(input: String?): TransactionType? {
-        return when (input?.toIntOrNull()) {
-            1 -> TransactionType.INCOME
-            2 -> TransactionType.EXPENSES
-            else -> null
-        }
-    }
-
-    fun getValidCategoryFromInput(input: String?): TransactionCategory? {
-        val index = input?.toIntOrNull()
-        if (index != null && index in 1..TransactionCategory.entries.size) {
-            return TransactionCategory.entries[index - 1]
-        } else {
-            return null
-        }
-    }
 }
 
 fun String.toUUIDOrNull(): UUID? = runCatching { UUID.fromString(this) }.getOrNull()
