@@ -5,18 +5,15 @@ import model.TransactionCategory
 import model.TransactionType
 import repository.TransactionManager
 import util.displayOnScreen
-import java.time.LocalDate
 import util.Validator
 import java.util.*
 import kotlin.system.exitProcess
-import util.toUUIDOrNull
 
 
-class CommandLineInterface() {
-    private val validator = Validator()
-
-
-class CommandLineInterface(private val transactionManager: TransactionManager) {
+class CommandLineInterface(
+    private val transactionManager: TransactionManager,
+    private val validator: Validator
+) {
     private val scanner = Scanner(System.`in`)
     fun start() {
         while (true) {
@@ -29,7 +26,7 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
         when (input?.trim()) {
             "1" -> addTransaction()
             "2" -> viewAllTransactions()
-            "3" -> editTransaction()
+            "3" -> updateTransaction()
             "4" -> deleteTransaction()
             "5" -> viewMonthlySummary()
             "6" -> viewCurrentBalance()
@@ -52,9 +49,9 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
         print("Enter your choice: ")
     }
 
-     private fun addTransaction(): Boolean {
+    private fun addTransaction(): Boolean {
         // TODO: Implement transaction addition logic
-         return false
+        return false
     }
 
 
@@ -64,84 +61,90 @@ class CommandLineInterface(private val transactionManager: TransactionManager) {
         if (transactions.isEmpty()) {
             println("No transactions found.")
         } else {
-//            println("===== VIEW ALL TRANSACTIONS =====")
-//            println("ID | Date | Amount | Category | Type")
-//            println("-------------------------------------------------------------")
-//            transactions.forEach {
-//                println(
-//                    "${it.id} | ${it.date} | ${it.amount} | ${
-//                        it.transactionCategory.name.lowercase().replaceFirstChar { c -> c.uppercase() }
-//                    } | ${it.type.name.lowercase().replaceFirstChar { c -> c.uppercase() }}"
-//                )
-//            }
+            println("===== VIEW ALL TRANSACTIONS =====")
             transactions.displayOnScreen()
         }
-
         return transactions
     }
 
-    private fun editTransaction(): Boolean {
-        println("===== EDIT TRANSACTION =====")
-        print("Enter transaction ID: ")
-        val id = validator.isValidUUID(scanner.nextLine())
+    //region  UpdateTransaction
+    private fun updateTransaction() {
+        val transactionsList = transactionManager.getAllTransactions()
+        transactionsList.displayOnScreen()
 
-        if (!validator.transactionExists(id) { transactionManager.getTransactionById(it) != null }) {
-            println("❌ Invalid or nonexistent transaction ID.")
-            return false
+        print("\nEnter the number of the transaction you want to edit: ")
+        val indexInput = readLine()
+        val index = validator.getValidIndex(indexInput, transactionsList.size)
+        if (index == null) {
+            println("Invalid choice.")
+            return
         }
 
-        val existing = transactionManager.getTransactionById(id!!) // safe because of the check above
+        val selectedTransaction = transactionsList[index]
+        println("Leave any field blank to keep current value.\n")
 
-        val tempTransaction = addTransaction(
-            defaultAmount = existing.amount,
-            defaultType = existing.type,
-            defaultCategory = existing.transactionCategory
+        val newAmount = enterTransactionAmount(selectedTransaction)
+        val newType = chooseTransactionType(selectedTransaction.type)
+        val newCategory = chooseTransactionCategory(selectedTransaction.transactionCategory)
+
+        val updatedTransaction = selectedTransaction.copy(
+            amount = newAmount,
+            type = newType,
+            transactionCategory = newCategory
         )
-
-        if (!tempTransaction) {
-            println("❌ Transaction update canceled.")
-            return false
-        }
-
-        val all = transactionManager.getAllTransactions()
-        val last = all.lastOrNull() ?: return false
-        val updatedTransaction = last.copy(id = existing.id, date = existing.date)
-
-        return if (transactionManager.updateTransaction(updatedTransaction)) {
-            println("✅ Transaction updated successfully.")
-            true
-        } else {
-            println("❌ Failed to update transaction.")
-            false
-        }
+        transactionManager.updateTransaction(index, updatedTransaction)
+        println("Transaction Updated successfully!")
     }
 
+    private fun chooseTransactionType(default: TransactionType): TransactionType {
+        println("Choose new type")
+        TransactionType.entries.forEachIndexed { index, type ->
+            println("${index + 1} - $type")
+        }
+        print("Your choice (or press Enter to keep none) : ")
+        val input = readLine()
+        return validator.getValidTransactionType(input) ?: default
+    }
 
+    private fun chooseTransactionCategory(default: TransactionCategory): TransactionCategory {
+        println("Choose new category:")
+        TransactionCategory.entries.forEachIndexed { index, category ->
+            println("${index + 1} - $category")
+        }
+        print("Your choice (or press Enter to keep none) : ")
+        val input = readLine()
+        return validator.getValidCategory(input) ?: default
+    }
 
+    private fun enterTransactionAmount(selectedTransaction: Transaction): Double {
+        print("New amount (current: ${selectedTransaction.amount}): ")
+        val newAmountInput = readLine()
+        val newAmount = newAmountInput?.toDoubleOrNull() ?: selectedTransaction.amount
+        return newAmount
+    }
 
-    private fun deleteTransaction(): Boolean {
+    //endregion
+
+    //region deleteTransaction
+    private fun deleteTransaction() {
         println("===== DELETE TRANSACTION =====")
-        print("Enter transaction ID: ")
-        val id = validator.isValidUUID(scanner.nextLine())
-
-        if (!validator.transactionExists(id) { transactionManager.getTransactionById(it) != null }) {
-            println("❌ Invalid or nonexistent transaction ID.")
-            return false
+        val transactionsList = transactionManager.getAllTransactions()
+        transactionsList.displayOnScreen()
+        println("Enter the number of the transaction you want to delete: ")
+        val indexInput = readLine()
+        val index = validator.getValidIndex(indexInput, transactionsList.size)
+        if (index == null) {
+            println("Invalid choice.")
+            return
         }
-
-        return if (transactionManager.deleteTransaction(id!!)) {
-            println("✅ Transaction deleted successfully.")
-            true
-        } else {
-            println("❌ Failed to delete transaction.")
-            false
-        }
+        val selectedTransaction = transactionsList[index]
+        transactionManager.deleteTransaction(selectedTransaction.id)
+        println("Transaction deleted successfully!")
     }
+    //endregion
 
 
-
-
-    private fun viewMonthlySummary() : List<Transaction>{
+    private fun viewMonthlySummary(): List<Transaction> {
         // TODO: Implement monthly summary logic
         return listOf()
     }
