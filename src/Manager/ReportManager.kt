@@ -1,4 +1,4 @@
-package repository
+package Manager
 
 import data_source.TransactionDataSource
 import model.MonthlySummary

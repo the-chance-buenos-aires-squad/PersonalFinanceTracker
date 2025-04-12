@@ -1,6 +1,7 @@
 # Personal Finance Tracker
 
-A Kotlin-based command-line application for tracking personal finances, managing transactions, and monitoring your financial balance.
+A Kotlin-based command-line application for tracking personal finances, managing transactions, and monitoring your
+financial balance.
 
 ## Features
 
@@ -26,11 +27,13 @@ src/
 ## Core Components
 
 ### Data Models
+
 - `Transaction`: Represents financial transactions with properties like amount, category, type, and date
 - `TransactionCategory`: Enumeration of transaction categories
 - `TransactionType`: Enumeration of transaction types (INCOME/EXPENSE)
 
 ### Data Management
+
 - In-memory transaction storage
 - Transaction management and retrieval
 - Balance calculation and tracking
@@ -38,16 +41,19 @@ src/
 ## Getting Started
 
 ### Building the Project
-1. Clone the repository
+
+1. Clone the Manager
 2. Navigate to the project directory
 3. Build the project using your preferred build tool
 
 ### Running the Application
+
 Run the main function in `Main.kt` to start the application.
 
 ## Usage
 
 The application provides a command-line interface for:
+
 - Adding new transactions
 - Viewing transaction history
 - Checking account balance
@@ -59,7 +65,7 @@ The project includes validation checks in the `checks` directory to ensure prope
 
 ## Contributing
 
-1. Fork the repository
+1. Fork the Manager
 2. Create a feature branch
 3. Commit your changes
 4. Push to the branch
