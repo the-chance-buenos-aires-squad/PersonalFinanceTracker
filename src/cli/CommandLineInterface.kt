@@ -3,8 +3,9 @@ package cli
 import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
-import Manager.ReportManager
-import Manager.TransactionManager
+import manager.ReportManager
+import manager.TransactionManager
+import model.MonthlySummary
 import util.*
 import java.time.LocalDate
 import java.util.*
@@ -59,7 +60,7 @@ class CommandLineInterface(
     private fun addTransaction() {
         printSectionHeader("ADD TRANSACTION")
 
-        val amount = enterTransactionAmount(validator)
+        val amount = enterTransactionAmount()
         val type = chooseTransactionType()
         val category = chooseTransactionCategory()
 
@@ -73,52 +74,43 @@ class CommandLineInterface(
 
     }
 
-    private fun enterTransactionAmount(validator: Validator): Double {
-        var amount: Double? = null
-        while (amount == null) {
-            print("Enter amount: ")
+    private fun enterTransactionAmount(currentAmount: Double? = null): Double {
+        while (true) {
+            if (currentAmount != null) {
+                print("New amount (current: $currentAmount): ")
+            } else {
+                print("Enter amount: ")
+            }
+
             val input = scanner.nextLine()
+
+            if (input.isBlank() && currentAmount != null) return currentAmount
+
             if (validator.isValidAmount(input)) {
-                amount = input.toDouble()
+                return input.toDouble()
             } else {
                 println("Invalid amount. Please enter a valid number.")
             }
         }
-        return amount
     }
 
-    private fun chooseTransactionType(): TransactionType {
-        val types = TransactionType.values()
-        println("Transaction Type:")
-        types.forEachIndexed { index, type ->
-            println("${index + 1}. ${type.name.lowercase().replaceFirstChar { it.uppercase() }}")
-        }
-
-        var type: TransactionType? = null
-        while (type == null) {
-            print("Your choice: ")
-            val input = scanner.nextLine()
-            type = getValidTransactionTypeFromInput(input)
-            if (type == null) println("Invalid type.")
-        }
-        return type
-    }
-
-    private fun chooseTransactionCategory(): TransactionCategory {
-        val categories = TransactionCategory.values()
+    private fun chooseTransactionCategory(currentCategory: TransactionCategory? = null): TransactionCategory {
         println("Transaction Category:")
-        categories.forEachIndexed { index, category ->
+        TransactionCategory.entries.forEachIndexed { index, category ->
             println("${index + 1}. ${category.name.lowercase().replaceFirstChar { it.uppercase() }}")
         }
 
-        var category: TransactionCategory? = null
-        while (category == null) {
-            print("Your choice: ")
+        while (true) {
+            print("Your choice${if (currentCategory != null) " (or press Enter to keep current: $currentCategory)" else ""}: ")
             val input = scanner.nextLine()
-            category = getValidCategoryFromInput(input)
-            if (category == null) println("Invalid category.")
+
+            if (input.isBlank() && currentCategory != null) return currentCategory
+
+            val category = getValidCategoryFromInput(input)
+            if (category != null) return category
+
+            println("Invalid category.")
         }
-        return category
     }
 
     private fun singleTransaction(transaction: Transaction) {
@@ -139,9 +131,7 @@ class CommandLineInterface(
         }
         return transactions
     }
-    //endregion
 
-    //region  updateTransaction
     private fun updateTransaction() {
         printSectionHeader("THIS IS ALL TRANSACTIONS")
         val transactionsList = transactionManager.getAllTransactions()
@@ -158,7 +148,7 @@ class CommandLineInterface(
         val selectedTransaction = transactionsList[index]
         println("Leave any field blank to keep current value.\n")
 
-        val newAmount = enterTransactionAmount(selectedTransaction)
+        val newAmount = enterTransactionAmount(selectedTransaction.amount)
         val newType = chooseTransactionType(selectedTransaction.type)
         val newCategory = chooseTransactionCategory(selectedTransaction.transactionCategory)
 
@@ -170,36 +160,25 @@ class CommandLineInterface(
         println("Transaction Updated successfully!")
     }
 
-    private fun chooseTransactionType(default: TransactionType): TransactionType {
-        println("Choose new type")
+    private fun chooseTransactionType(currentType: TransactionType? = null): TransactionType {
+        println("Transaction Type:")
         TransactionType.entries.forEachIndexed { index, type ->
-            println("${index + 1} - $type")
+            println("${index + 1}. ${type.name.lowercase().replaceFirstChar { it.uppercase() }}")
         }
-        print("Your choice (or press Enter to keep none) : ")
-        val input = readLine()
-        return getValidTransactionTypeFromInput(input) ?: default
-    }
 
-    private fun chooseTransactionCategory(default: TransactionCategory): TransactionCategory {
-        println("Choose new category:")
-        TransactionCategory.entries.forEachIndexed { index, category ->
-            println("${index + 1} - $category")
+        while (true) {
+            print("Your choice${if (currentType != null) " (or press Enter to keep current: $currentType)" else ""}: ")
+            val input = scanner.nextLine()
+
+            if (input.isBlank() && currentType != null) return currentType
+
+            val type = getValidTransactionTypeFromInput(input)
+            if (type != null) return type
+
+            println("Invalid type.")
         }
-        print("Your choice (or press Enter to keep none) : ")
-        val input = readLine()
-        return getValidCategoryFromInput(input) ?: default
     }
 
-    private fun enterTransactionAmount(selectedTransaction: Transaction): Double {
-        print("New amount (current: ${selectedTransaction.amount}): ")
-        val newAmountInput = readLine()
-        val newAmount = newAmountInput?.toDoubleOrNull() ?: selectedTransaction.amount
-        return newAmount
-    }
-
-    //endregion
-
-    //region deleteTransaction
     private fun deleteTransaction() {
         printSectionHeader("DELETE TRANSACTION")
         val transactionsList = transactionManager.getAllTransactions()
@@ -218,17 +197,11 @@ class CommandLineInterface(
         transactionManager.deleteTransaction(selectedTransaction.id)
         println("Transaction deleted successfully!")
     }
-    //endregion
 
-    //region  viewMonthlySummary
     private fun viewMonthlySummary(): List<Transaction> {
         printSectionHeader("VIEW MONTHLY SUMMARY")
-        print("Enter year (e.g. 2025): ")
-        val yearInput = scanner.nextLine().toIntOrNull() ?: LocalDate.now().year
-
-        print("Enter month (1-12): ")
-        val monthInput = scanner.nextLine().toIntOrNull()
-
+        val yearInput = getYearInput()
+        val monthInput = getMonthInput()
 
         if (!validator.isValidYear(yearInput) || !validator.isValidMonth(monthInput)) {
             println("❌ Invalid year or month.")
@@ -240,7 +213,23 @@ class CommandLineInterface(
             println("⚠️ No transactions found for $monthInput/$yearInput.")
             return listOf()
         }
-        println("\n📊 Summary for $monthInput/$yearInput:")
+
+        printSummary(summary, monthInput, yearInput)
+        return emptyList()
+    }
+
+    private fun getYearInput(): Int {
+        print("Enter year (e.g. 2025 or press Enter to keep current year): ")
+        return scanner.nextLine().toIntOrNull() ?: LocalDate.now().year
+    }
+
+    private fun getMonthInput(): Int? {
+        print("Enter month (1-12): ")
+        return scanner.nextLine().toIntOrNull()
+    }
+
+    private fun printSummary(summary: MonthlySummary, month: Int, year: Int) {
+        println("\n📊 Summary for $month/$year:")
         println("Total Income: \$${summary.totalIncome}")
         println("Total Expense: \$${summary.totalExpense}")
         println("Net: \$${summary.totalIncome - summary.totalExpense}")
@@ -254,19 +243,14 @@ class CommandLineInterface(
         summary.highestExpenseCategory?.let {
             println("- ${it.category}: \$${it.amount}")
         } ?: println("- None")
-        return emptyList()
     }
-    //endregion
 
-    private fun viewCurrentBalance(): String {
-        return "Total Balance: ${reportManager.getBalance()}"
+    private fun viewCurrentBalance() {
+        println("Total Balance: ${reportManager.getBalance()}")
     }
-    //endregion
 
-    //region  exit
     private fun exit() {
         println("Exiting application... Goodbye!")
         exitProcess(0)
     }
-    //endregion
 }
