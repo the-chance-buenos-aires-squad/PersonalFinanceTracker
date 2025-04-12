@@ -21,8 +21,8 @@ fun Transaction.toFileString(): String {
     ).joinToString("|")
 }
 
-fun Transaction.fromFileString(transactionText: String): Transaction {
-    val parts = transactionText.split("|")
+fun String.fromFileString(): Transaction {
+    val parts = this.split("|")
     return Transaction(
         id = UUID.fromString(parts[0]),
         amount = parts[1].toDouble(),

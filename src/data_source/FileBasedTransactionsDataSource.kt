@@ -1,31 +1,46 @@
 package data_source
 
 import model.Transaction
+import model.fromFileString
 import model.toFileString
-import util.TransactionsFile
+import util.TransactionsFileManager
+import util.transformTransactionsToTextLines
 import java.util.*
 
 class FileBasedTransactionsDataSource(
-    private val transactionsFile: TransactionsFile
+    private val transactionsFileManager: TransactionsFileManager
 ) : TransactionDataSource {
 
     override fun addTransactions(transaction: Transaction): Boolean {
-        return transactionsFile.appendToFile(transaction.toFileString())
+        return transactionsFileManager.appendToFile(transaction.toFileString())
     }
 
     override fun deleteTransaction(id: UUID): Boolean {
-        TODO("Not yet implemented")
+        val transactions = getAllTransactions().toMutableList()
+        val indexOfTransaction = transactions.indexOfFirst { it.id == id }
+        if(indexOfTransaction == -1) return false
+
+        transactions.removeAt(indexOfTransaction)
+        val transactionsTextLines = transformTransactionsToTextLines(transactions)
+        return transactionsFileManager.writeToFile(transactionsTextLines)
     }
 
     override fun getAllTransactions(): List<Transaction> {
-        TODO("Not yet implemented")
+        return transactionsFileManager.readLinesFromFile().map { transactionText -> transactionText.fromFileString() }
     }
 
     override fun getTransactionById(id: UUID): Transaction? {
-        TODO("Not yet implemented")
+        val transactions = getAllTransactions()
+        return transactions.find { it.id == id }
     }
 
     override fun updateTransaction(transaction: Transaction): Boolean {
-        TODO("Not yet implemented")
+        val transactions = getAllTransactions().toMutableList()
+        val indexOfTransaction = transactions.indexOfFirst { it.id == transaction.id }
+        if (indexOfTransaction == -1) return false
+
+        transactions[indexOfTransaction] = transaction
+        val transactionsTextLines = transformTransactionsToTextLines(transactions)
+        return transactionsFileManager.writeToFile(transactionsTextLines)
     }
 }
