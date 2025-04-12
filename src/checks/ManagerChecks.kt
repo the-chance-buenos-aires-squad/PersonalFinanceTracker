@@ -2,6 +2,7 @@ package checks
 
 import data_source.InMemoryTransactionsDataSource
 import model.*
+import repository.ReportManager
 import repository.TransactionManager
 import java.time.LocalDate
 import java.util.*
@@ -15,7 +16,7 @@ fun main() {
 
 fun runBalanceChecks() {
     val dataSource = InMemoryTransactionsDataSource()
-    val transactionManager = TransactionManager(dataSource)
+    val reportManager = ReportManager(dataSource)
     val transactions = listOf(
         Transaction(UUID.randomUUID(), 1000.0, TransactionCategory.SALARY, TransactionType.INCOME, LocalDate.now()),
         Transaction(
@@ -33,7 +34,7 @@ fun runBalanceChecks() {
     }
     check(
         message = "when Income greater than expense should return positive value",
-        result = transactionManager.getBalance() == 1200.0,
+        result = reportManager.getBalance() == 1200.0,
         correctResult = true
     )
 
@@ -48,7 +49,7 @@ fun runBalanceChecks() {
     )
     check(
         message = "when income equal than expense it will return zero",
-        result = transactionManager.getBalance() == 0.0,
+        result = reportManager.getBalance() == 0.0,
         correctResult = true
     )
     dataSource.addTransactions(
@@ -62,14 +63,14 @@ fun runBalanceChecks() {
     )
     check(
         message = "when balance less than zero it's invalid value",
-        result = transactionManager.getBalance() < 0.0,
+        result = reportManager.getBalance() < 0.0,
         correctResult = false
     )
 }
 
 fun runMonthlySummaryChecks() {
     val dataSource = InMemoryTransactionsDataSource()
-    val transactionManager = TransactionManager(dataSource)
+    val reportManager = ReportManager(dataSource)
     dataSource.addTransactions(
         Transaction(
             amount = 20000.0,
@@ -153,7 +154,7 @@ fun runMonthlySummaryChecks() {
     val memoryTransactionsDataSource = dataSource.getAllTransactions()
     check(
         "When Valid Month It Should return MonthlySummary successfully",
-        transactionManager.getMonthlySummaryReport(1) == MonthlySummary(
+        reportManager.getMonthlySummaryReport(1) == MonthlySummary(
             totalIncome = 22000.0,
             totalExpense = 8500.0,
             incomeList = memoryTransactionsDataSource.filter {
@@ -169,7 +170,7 @@ fun runMonthlySummaryChecks() {
     )
     check(
         "When Valid Month but no expense" + "It Should return MonthlySummary empty expenseList and highestExpendCategory null",
-        transactionManager.getMonthlySummaryReport(3) == MonthlySummary(
+        reportManager.getMonthlySummaryReport(3) == MonthlySummary(
             totalIncome = 22000.0,
             totalExpense = 0.0,
             incomeList = memoryTransactionsDataSource.filter {
@@ -183,7 +184,7 @@ fun runMonthlySummaryChecks() {
     )
     check(
         "When Valid Month but no Income" + "It Should return MonthlySummary empty incomeList and highestIncomeCategory null",
-        transactionManager.getMonthlySummaryReport(5) == MonthlySummary(
+        reportManager.getMonthlySummaryReport(5) == MonthlySummary(
             totalIncome = 0.0,
             totalExpense = 8500.0,
             incomeList = listOf(),
@@ -198,37 +199,37 @@ fun runMonthlySummaryChecks() {
     )
     check(
         "When there are no transactions in the specified month, it should return null",
-        transactionManager.getMonthlySummaryReport(2) == null,
+        reportManager.getMonthlySummaryReport(2) == null,
         true
     )
     check(
         "When the user enters a negative month number, it should return null",
-        transactionManager.getMonthlySummaryReport(-1) == null,
+        reportManager.getMonthlySummaryReport(-1) == null,
         true
     )
     check(
         "When the user enters a month less than 1, it should return null",
-        transactionManager.getMonthlySummaryReport(0) == null,
+        reportManager.getMonthlySummaryReport(0) == null,
         true
     )
     check(
         "When the user enters a month greater than 12, it should return null",
-        transactionManager.getMonthlySummaryReport(13) == null,
+        reportManager.getMonthlySummaryReport(13) == null,
         true
     )
     check(
         "When the user enters a negative year, it should return null",
-        transactionManager.getMonthlySummaryReport(1, -1) == null,
+        reportManager.getMonthlySummaryReport(1, -1) == null,
         true
     )
     check(
         "When the specified year has no transactions but the month is valid, it should return null",
-        transactionManager.getMonthlySummaryReport(1, 2000) == null,
+        reportManager.getMonthlySummaryReport(1, 2000) == null,
         true
     )
     check(
         "When the user enters a future year, it should return null",
-        transactionManager.getMonthlySummaryReport(1, 2030) == null,
+        reportManager.getMonthlySummaryReport(1, 2030) == null,
         true
     )
 }

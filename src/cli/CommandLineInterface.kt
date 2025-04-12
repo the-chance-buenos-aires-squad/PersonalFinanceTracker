@@ -5,8 +5,10 @@ import jdk.jshell.execution.Util
 import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
+import repository.ReportManager
 import repository.TransactionManager
 import util.*
+import java.time.LocalDate
 import java.util.*
 import javax.sql.DataSource
 import kotlin.system.exitProcess
@@ -14,6 +16,7 @@ import kotlin.system.exitProcess
 
 class CommandLineInterface(
     private val transactionManager: TransactionManager,
+    private val reportManager: ReportManager,
     private val validator: Validator
 ) {
     private val scanner = Scanner(System.`in`)
@@ -163,7 +166,7 @@ class CommandLineInterface(
             return listOf()
         }
 
-        val summary = transactionManager.getMonthlySummaryReport(monthInput!!, yearInput!!)
+        val summary = reportManager.getMonthlySummaryReport(monthInput!!, yearInput!!)
         if (summary == null) {
             println("⚠️ No transactions found for $monthInput/$yearInput.")
             return listOf()
@@ -186,7 +189,7 @@ class CommandLineInterface(
     }
 
     private fun viewCurrentBalance(): String {
-        return "Total Balance: ${transactionManager.getBalance()}"
+        return "Total Balance: ${reportManager.getBalance()}"
     }
 
     private fun exit() {
