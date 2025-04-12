@@ -1,12 +1,15 @@
 package cli
 
+import data_source.TransactionDataSource
 import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
 import repository.TransactionManager
 import util.displayOnScreen
 import util.Validator
+import util.printSectionHeader
 import java.util.*
+import javax.sql.DataSource
 import kotlin.system.exitProcess
 
 
@@ -36,17 +39,19 @@ class CommandLineInterface(
     }
 
     private fun displayMenu() {
-        println()
-        println("======= PERSONAL FINANCE TRACKER =======")
-        println("\t1. Add Transaction")
-        println("\t2. View All Transactions")
-        println("\t3. Edit Transaction")
-        println("\t4. Delete Transaction")
-        println("\t5. View Monthly Summary")
-        println("\t6. View Current Balance")
-        println("\t7. Exit")
-        println("=======================================")
-        print("Enter your choice: ")
+        println("""
+            
+            ======= PERSONAL FINANCE TRACKER =======
+            	1. Add Transaction
+            	2. View All Transactions
+                3. Edit Transaction
+                4. Delete Transaction
+                5. View Monthly Summary
+                6. View Current Balance
+                7. Exit
+            =======================================
+            Enter your choice: 
+        """.trimIndent())
     }
 
     private fun addTransaction(): Boolean {
@@ -61,7 +66,7 @@ class CommandLineInterface(
         if (transactions.isEmpty()) {
             println("No transactions found.")
         } else {
-            println("===== VIEW ALL TRANSACTIONS =====")
+            printSectionHeader("VIEW ALL TRANSACTIONS")
             transactions.displayOnScreen()
         }
         return transactions
@@ -74,7 +79,7 @@ class CommandLineInterface(
 
         print("\nEnter the number of the transaction you want to edit: ")
         val indexInput = readLine()
-        val index = validator.getValidIndex(indexInput, transactionsList.size)
+        val index = validator.getValidIndexFromInput(indexInput, transactionsList.size)
         if (index == null) {
             println("Invalid choice.")
             return
@@ -103,7 +108,7 @@ class CommandLineInterface(
         }
         print("Your choice (or press Enter to keep none) : ")
         val input = readLine()
-        return validator.getValidTransactionType(input) ?: default
+        return validator.getValidTransactionTypeFromInput(input) ?: default
     }
 
     private fun chooseTransactionCategory(default: TransactionCategory): TransactionCategory {
@@ -113,7 +118,7 @@ class CommandLineInterface(
         }
         print("Your choice (or press Enter to keep none) : ")
         val input = readLine()
-        return validator.getValidCategory(input) ?: default
+        return validator.getValidCategoryFromInput(input) ?: default
     }
 
     private fun enterTransactionAmount(selectedTransaction: Transaction): Double {
@@ -127,12 +132,12 @@ class CommandLineInterface(
 
     //region deleteTransaction
     private fun deleteTransaction() {
-        println("===== DELETE TRANSACTION =====")
+        printSectionHeader("DELETE TRANSACTION")
         val transactionsList = transactionManager.getAllTransactions()
         transactionsList.displayOnScreen()
         println("Enter the number of the transaction you want to delete: ")
         val indexInput = readLine()
-        val index = validator.getValidIndex(indexInput, transactionsList.size)
+        val index = validator.getValidIndexFromInput(indexInput, transactionsList.size)
         if (index == null) {
             println("Invalid choice.")
             return
@@ -145,15 +150,14 @@ class CommandLineInterface(
 
 
     private fun viewMonthlySummary(): List<Transaction> {
-        println("===== VIEW MONTHLY SUMMARY =====")
-
+        printSectionHeader("VIEW MONTHLY SUMMARY")
         print("Enter year (e.g. 2025): ")
         val yearInput = scanner.nextLine().toIntOrNull()
 
         print("Enter month (1-12): ")
         val monthInput = scanner.nextLine().toIntOrNull()
 
-        if (!validator.yearIsValid(yearInput) || !validator.monthIsValid(monthInput)) {
+        if (!validator.isValidYear(yearInput) || !validator.isValidMonth(monthInput)) {
             println("❌ Invalid year or month.")
             return listOf()
         }
@@ -189,7 +193,3 @@ class CommandLineInterface(
         exitProcess(0)
     }
 }
-
-
-
-
