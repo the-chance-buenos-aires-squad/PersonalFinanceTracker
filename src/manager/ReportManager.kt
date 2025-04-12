@@ -71,7 +71,7 @@ class ReportManager(private val dataSource: TransactionDataSource) {
     ): Double {
         var totalExpense = 0.0
         transactions.forEach {
-            if (it.type != TransactionType.EXPENSES) {
+            if (it.type == TransactionType.EXPENSES) {
                 expanseList.add(it)
                 totalExpense += it.amount
             }
