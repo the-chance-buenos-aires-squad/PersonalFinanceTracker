@@ -23,7 +23,7 @@ class Validator {
 
     fun isValidAmount(amount: String): Boolean {
         val number = amount.toDoubleOrNull()
-        return number != null && number >= 0
+        return number != null && number > 0
     }
 
     fun getValidIndexFromInput(input: String?, listSize: Int): Int? {
