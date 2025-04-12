@@ -1,16 +1,12 @@
 package cli
 
-import data_source.TransactionDataSource
-import jdk.jshell.execution.Util
 import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
 import repository.ReportManager
 import repository.TransactionManager
 import util.*
-import java.time.LocalDate
 import java.util.*
-import javax.sql.DataSource
 import kotlin.system.exitProcess
 
 
