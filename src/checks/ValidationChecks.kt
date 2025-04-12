@@ -2,9 +2,12 @@ package checks
 
 import util.Validator
 
-fun validationChecks(){
-val validator = Validator()
-//  notOutOfRang checks
+fun main() {
+    validationChecks()
+}
+
+fun validationChecks() {
+    val validator = Validator()
     check(
         message = "checking n 1 in the rang:5, return true",
         result = validator.isInRange(n= 1, rang = 5),
@@ -15,48 +18,35 @@ val validator = Validator()
         result = validator.isInRange(n= 6, rang = 5),
         correctResult = false
     )
-
-//    fun monthIsValid checks
     check(
         message = "checking month 3 is valid, return true",
         result = validator.isValidMonth(month = 6),
         correctResult = true
     )
-
     check(
         message = "checking month 13 is not valid, return false",
         result = validator.isValidMonth(month = 13),
         correctResult = false
     )
-
-
-//    fun yearIsValid checks
     check(
         message = "checking year 2025 3 is valid, return true",
         result = validator.isValidYear(2025),
         correctResult = true
     )
-
     check(
         message = "checking year 2030 3 is not valid, return false",
         result = validator.isValidYear(2030),
         correctResult = false
     )
-
-
-
-//    fun amountIsValid checks
     check(
         message = "checking amount 13.0 is valid, return true",
         result = validator.isValidAmount("13.0"),
         correctResult = true
     )
-
     check(
         message = "checking amount 12xs is not valid, return false",
         result = validator.isValidAmount("12xs"),
         correctResult = false
     )
-
 }
 
