@@ -17,8 +17,7 @@ class Validator {
 
     fun isValidYear(year: Int?): Boolean {
         val currentYear = Year.now().value
-        return year != null && year in 1900..currentYear
-
+        return year in 1900..currentYear
     }
 
     fun isValidAmount(amount: String): Boolean {

@@ -1,22 +1,19 @@
 package cli
 
-import data_source.TransactionDataSource
-import jdk.jshell.execution.Util
 import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
+import repository.ReportManager
 import repository.TransactionManager
-import util.Validator
-import util.displayAllTransaction
-import util.printSectionHeader
+import util.*
 import java.time.LocalDate
 import java.util.*
-import javax.sql.DataSource
 import kotlin.system.exitProcess
 
 
 class CommandLineInterface(
     private val transactionManager: TransactionManager,
+    private val reportManager: ReportManager,
     private val validator: Validator
 ) {
     private val scanner = Scanner(System.`in`)
@@ -59,13 +56,12 @@ class CommandLineInterface(
     }
 
     //region  addTransaction
-    private fun addTransaction(){
+    private fun addTransaction() {
         printSectionHeader("ADD TRANSACTION")
-        val validator = Validator()
 
         val amount = enterTransactionAmount(validator)
-        val type = chooseTransactionType(validator)
-        val category = chooseTransactionCategory(validator)
+        val type = chooseTransactionType()
+        val category = chooseTransactionCategory()
 
         val transaction = Transaction(
             amount = amount,
@@ -94,7 +90,7 @@ class CommandLineInterface(
         return amount
     }
 
-    private fun chooseTransactionType(validator: Validator): TransactionType {
+    private fun chooseTransactionType(): TransactionType {
         val types = TransactionType.values()
         println("Transaction Type:")
         types.forEachIndexed { index, type ->
@@ -105,13 +101,13 @@ class CommandLineInterface(
         while (type == null) {
             print("Your choice: ")
             val input = scanner.nextLine()
-            type = validator.getValidTransactionTypeFromInput(input)
+            type = getValidTransactionTypeFromInput(input)
             if (type == null) println("Invalid type.")
         }
         return type
     }
 
-    private fun chooseTransactionCategory(validator: Validator): TransactionCategory {
+    private fun chooseTransactionCategory(): TransactionCategory {
         val categories = TransactionCategory.values()
         println("Transaction Category:")
         categories.forEachIndexed { index, category ->
@@ -122,7 +118,7 @@ class CommandLineInterface(
         while (category == null) {
             print("Your choice: ")
             val input = scanner.nextLine()
-            category = validator.getValidCategoryFromInput(input)
+            category = getValidCategoryFromInput(input)
             if (category == null) println("Invalid category.")
         }
         return category
@@ -132,7 +128,7 @@ class CommandLineInterface(
         println("Your Transaction:")
         println("Amount | Category | Type | Date")
         println("----------------------------------------")
-        println("${transaction.amount} | ${transaction.transactionCategory.name.lowercase()} | ${transaction.type.name.lowercase() } | ${transaction.date}")
+        println("${transaction.amount} | ${transaction.transactionCategory.name.lowercase()} | ${transaction.type.name.lowercase()} | ${transaction.date}")
     }
 
     private fun viewAllTransactions(): List<Transaction> {
@@ -230,17 +226,18 @@ class CommandLineInterface(
     private fun viewMonthlySummary(): List<Transaction> {
         printSectionHeader("VIEW MONTHLY SUMMARY")
         print("Enter year (e.g. 2025): ")
-        val yearInput = scanner.nextLine().toIntOrNull()
+        val yearInput = scanner.nextLine().toIntOrNull() ?: LocalDate.now().year
 
         print("Enter month (1-12): ")
         val monthInput = scanner.nextLine().toIntOrNull()
+
 
         if (!validator.isValidYear(yearInput) || !validator.isValidMonth(monthInput)) {
             println("❌ Invalid year or month.")
             return listOf()
         }
 
-        val summary = transactionManager.getMonthlySummaryReport(monthInput!!, yearInput!!)
+        val summary = reportManager.getMonthlySummaryReport(monthInput!!, yearInput!!)
         if (summary == null) {
             println("⚠️ No transactions found for $monthInput/$yearInput.")
             return listOf()
@@ -263,9 +260,8 @@ class CommandLineInterface(
     }
     //endregion
 
-    //region  viewCurrentBalance
-    private fun viewCurrentBalance() {
-        println("Total Balance: ${transactionManager.getBalance()}")
+    private fun viewCurrentBalance(): String {
+        return "Total Balance: ${reportManager.getBalance()}"
     }
     //endregion
 
