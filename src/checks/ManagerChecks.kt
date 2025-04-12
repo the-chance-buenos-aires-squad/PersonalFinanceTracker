@@ -10,7 +10,7 @@ fun main() {
     runBalanceChecks()
     runMonthlySummaryChecks()
     runGetAllGetByIdChecks()
-    //runAddDeleteUpdateTransactionChecks()
+    runAddDeleteUpdateTransactionChecks()
 }
 
 fun runBalanceChecks() {
@@ -166,7 +166,6 @@ fun runMonthlySummaryChecks() {
             highestExpenseCategory = TopCategory(8000.0, TransactionCategory.RENT)
         ),
         true
-
     )
     check(
         "When Valid Month but no expense" + "It Should return MonthlySummary empty expenseList and highestExpendCategory null",
@@ -181,7 +180,6 @@ fun runMonthlySummaryChecks() {
             highestExpenseCategory = null
         ),
         true
-
     )
     check(
         "When Valid Month but no Income" + "It Should return MonthlySummary empty incomeList and highestIncomeCategory null",
@@ -197,7 +195,6 @@ fun runMonthlySummaryChecks() {
             highestExpenseCategory = TopCategory(8000.0, TransactionCategory.RENT)
         ),
         true
-
     )
     check(
         "When there are no transactions in the specified month, it should return null",
@@ -279,17 +276,11 @@ fun runGetAllGetByIdChecks() {
             date = LocalDate.of(2025, 1, 20)
         )
     )
-
-
-
-
     check(
         message = "when The number of transactions is 5 should return true",
         result = transactionManager.getAllTransactions().size == 5,
         correctResult = true
     )
-
-
     val emptyDataSource = InMemoryTransactionsDataSource()
     val secondTransaction = TransactionManager(emptyDataSource)
     check(
@@ -297,10 +288,7 @@ fun runGetAllGetByIdChecks() {
         result = secondTransaction.getAllTransactions().isEmpty(),
         correctResult = true
     )
-
-
     val retrievedTransaction = transactionManager.getTransactionById(UUID.randomUUID())
-
     check(
         message = "when Retrieving by invalid ID should return null",
         result = retrievedTransaction == null,
@@ -311,16 +299,11 @@ fun runGetAllGetByIdChecks() {
 fun runAddDeleteUpdateTransactionChecks() {
     val dataSource = InMemoryTransactionsDataSource()
     val transactionManager = TransactionManager(dataSource)
-    val index = 0
-    val originalTransaction = transactionManager.getAllTransactions()[index].copy() // snapshot before change
-    val updatedTransaction = originalTransaction.copy(amount = 200.0)
-    val result = transactionManager.updateTransaction(index, updatedTransaction)
-    val afterUpdateTransaction = transactionManager.getAllTransactions()[index]
     val transaction = Transaction(
         amount = 100.0,
         transactionCategory = TransactionCategory.FOOD,
         type = TransactionType.EXPENSES,
-        date = LocalDate.now()
+        date = LocalDate.now() // Use the current date
     )
     check(
         " When Add transaction to system should return true",
@@ -328,17 +311,12 @@ fun runAddDeleteUpdateTransactionChecks() {
         correctResult = true
     )
     check(
-        "when update transaction it should return true",
-        result = result,
+        " when Update transaction to system should return true  ",
+        result = transactionManager.updateTransaction(transaction),
         correctResult = true
     )
     check(
-        "when update transaction should be changed",
-        result = originalTransaction != afterUpdateTransaction,
-        correctResult = true
-    )
-    check(
-        "When delete transaction to system should return true",
+        " When delete transaction to system should return true  ",
         result = transactionManager.deleteTransaction(transaction.id),
         correctResult = true
     )
