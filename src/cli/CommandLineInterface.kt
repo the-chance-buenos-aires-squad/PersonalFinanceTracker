@@ -3,8 +3,8 @@ package cli
 import model.Transaction
 import model.TransactionCategory
 import model.TransactionType
-import repository.ReportManager
-import repository.TransactionManager
+import Manager.ReportManager
+import Manager.TransactionManager
 import util.*
 import java.time.LocalDate
 import java.util.*
@@ -64,10 +64,7 @@ class CommandLineInterface(
         val category = chooseTransactionCategory()
 
         val transaction = Transaction(
-            amount = amount,
-            transactionCategory = category,
-            type = type,
-            date = LocalDate.now()
+            amount = amount, transactionCategory = category, type = type, date = LocalDate.now()
         )
 
         transactionManager.addTransaction(transaction)
@@ -166,9 +163,7 @@ class CommandLineInterface(
         val newCategory = chooseTransactionCategory(selectedTransaction.transactionCategory)
 
         val updatedTransaction = selectedTransaction.copy(
-            amount = newAmount,
-            type = newType,
-            transactionCategory = newCategory
+            amount = newAmount, type = newType, transactionCategory = newCategory
         )
 
         transactionManager.updateTransaction(updatedTransaction)
@@ -208,6 +203,9 @@ class CommandLineInterface(
     private fun deleteTransaction() {
         printSectionHeader("DELETE TRANSACTION")
         val transactionsList = transactionManager.getAllTransactions()
+        if (transactionsList.isEmpty()) {
+            return
+        }
         transactionsList.displayAllTransaction()
         println("Enter the number of the transaction you want to delete: ")
         val indexInput = readLine()

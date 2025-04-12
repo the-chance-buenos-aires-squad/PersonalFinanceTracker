@@ -1,11 +1,7 @@
-package repository
+package Manager
 
 import data_source.TransactionDataSource
-import model.MonthlySummary
-import model.TopCategory
 import model.Transaction
-import model.TransactionType
-import java.time.LocalDate
 import java.util.*
 
 class TransactionManager(private val dataSource: TransactionDataSource) {

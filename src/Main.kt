@@ -1,7 +1,7 @@
 import cli.CommandLineInterface
 import data_source.InMemoryTransactionsDataSource
-import repository.ReportManager
-import repository.TransactionManager
+import Manager.ReportManager
+import Manager.TransactionManager
 import util.Validator
 
 fun main() {
