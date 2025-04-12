@@ -144,7 +144,6 @@ class CommandLineInterface(
     //endregion
 
 
-
     private fun viewMonthlySummary(): List<Transaction> {
         println("===== VIEW MONTHLY SUMMARY =====")
 
@@ -178,9 +177,7 @@ class CommandLineInterface(
         summary.highestExpenseCategory?.let {
             println("- ${it.category}: \$${it.amount}")
         } ?: println("- None")
-
-        return summary.incomeList + summary.expenseList
-
+        return emptyList()
     }
 
     private fun viewCurrentBalance(): String {
