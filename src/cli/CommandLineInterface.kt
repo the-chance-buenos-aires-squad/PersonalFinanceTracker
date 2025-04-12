@@ -5,7 +5,10 @@ import model.TransactionCategory
 import model.TransactionType
 import repository.ReportManager
 import repository.TransactionManager
-import util.*
+import util.Validator
+import util.displayAllTransaction
+import util.printSectionHeader
+import java.time.LocalDate
 import java.util.*
 import kotlin.system.exitProcess
 
@@ -54,11 +57,82 @@ class CommandLineInterface(
         )
     }
 
-    private fun addTransaction(): Boolean {
-        // TODO: Implement transaction addition logic
-        return false
+    //region  addTransaction
+    private fun addTransaction(){
+        printSectionHeader("ADD TRANSACTION")
+        val validator = Validator()
+
+        val amount = enterTransactionAmount(validator)
+        val type = chooseTransactionType(validator)
+        val category = chooseTransactionCategory(validator)
+
+        val transaction = Transaction(
+            amount = amount,
+            transactionCategory = category,
+            type = type,
+            date = LocalDate.now()
+        )
+
+        transactionManager.addTransaction(transaction)
+        println("Transaction added successfully!\n")
+        singleTransaction(transaction)
+
     }
 
+    private fun enterTransactionAmount(validator: Validator): Double {
+        var amount: Double? = null
+        while (amount == null) {
+            print("Enter amount: ")
+            val input = scanner.nextLine()
+            if (validator.isValidAmount(input)) {
+                amount = input.toDouble()
+            } else {
+                println("Invalid amount. Please enter a valid number.")
+            }
+        }
+        return amount
+    }
+
+    private fun chooseTransactionType(validator: Validator): TransactionType {
+        val types = TransactionType.values()
+        println("Transaction Type:")
+        types.forEachIndexed { index, type ->
+            println("${index + 1}. ${type.name.lowercase().replaceFirstChar { it.uppercase() }}")
+        }
+
+        var type: TransactionType? = null
+        while (type == null) {
+            print("Your choice: ")
+            val input = scanner.nextLine()
+            type = validator.getValidTransactionTypeFromInput(input)
+            if (type == null) println("Invalid type.")
+        }
+        return type
+    }
+
+    private fun chooseTransactionCategory(validator: Validator): TransactionCategory {
+        val categories = TransactionCategory.values()
+        println("Transaction Category:")
+        categories.forEachIndexed { index, category ->
+            println("${index + 1}. ${category.name.lowercase().replaceFirstChar { it.uppercase() }}")
+        }
+
+        var category: TransactionCategory? = null
+        while (category == null) {
+            print("Your choice: ")
+            val input = scanner.nextLine()
+            category = validator.getValidCategoryFromInput(input)
+            if (category == null) println("Invalid category.")
+        }
+        return category
+    }
+
+    private fun singleTransaction(transaction: Transaction) {
+        println("Your Transaction:")
+        println("Amount | Category | Type | Date")
+        println("----------------------------------------")
+        println("${transaction.amount} | ${transaction.transactionCategory.name.lowercase()} | ${transaction.type.name.lowercase() } | ${transaction.date}")
+    }
 
     private fun viewAllTransactions(): List<Transaction> {
         val transactions = transactionManager.getAllTransactions()
@@ -67,15 +141,17 @@ class CommandLineInterface(
             println("No transactions found.")
         } else {
             printSectionHeader("VIEW ALL TRANSACTIONS")
-            transactions.displayOnScreen()
+            transactions.displayAllTransaction()
         }
         return transactions
     }
+    //endregion
 
-    //region  UpdateTransaction
+    //region  updateTransaction
     private fun updateTransaction() {
+        printSectionHeader("THIS IS ALL TRANSACTIONS")
         val transactionsList = transactionManager.getAllTransactions()
-        transactionsList.displayOnScreen()
+        transactionsList.displayAllTransaction()
 
         print("\nEnter the number of the transaction you want to edit: ")
         val indexInput = readLine()
@@ -97,6 +173,7 @@ class CommandLineInterface(
             type = newType,
             transactionCategory = newCategory
         )
+
         transactionManager.updateTransaction(updatedTransaction)
         println("Transaction Updated successfully!")
     }
@@ -134,7 +211,7 @@ class CommandLineInterface(
     private fun deleteTransaction() {
         printSectionHeader("DELETE TRANSACTION")
         val transactionsList = transactionManager.getAllTransactions()
-        transactionsList.displayOnScreen()
+        transactionsList.displayAllTransaction()
         println("Enter the number of the transaction you want to delete: ")
         val indexInput = readLine()
         val index = validator.getValidIndexFromInput(indexInput, transactionsList.size)
@@ -148,7 +225,7 @@ class CommandLineInterface(
     }
     //endregion
 
-
+    //region  viewMonthlySummary
     private fun viewMonthlySummary(): List<Transaction> {
         printSectionHeader("VIEW MONTHLY SUMMARY")
         print("Enter year (e.g. 2025): ")
@@ -183,13 +260,17 @@ class CommandLineInterface(
         } ?: println("- None")
         return emptyList()
     }
+    //endregion
 
     private fun viewCurrentBalance(): String {
         return "Total Balance: ${reportManager.getBalance()}"
     }
+    //endregion
 
+    //region  exit
     private fun exit() {
         println("Exiting application... Goodbye!")
         exitProcess(0)
     }
+    //endregion
 }
