@@ -60,7 +60,17 @@ class TransactionManager(private val dataSource: TransactionDataSource) {
 
     fun addTransaction(transaction: Transaction): Boolean = dataSource.addTransactions(transaction)
     fun deleteTransaction(id: UUID): Boolean = dataSource.deleteTransaction(id)
-    fun updateTransaction(transaction: Transaction): Boolean = dataSource.updateTransaction(transaction)
+
+
+    fun updateTransaction(index: Int, newTransaction: Transaction): Boolean {
+        val allTransaction = dataSource.getAllTransactions()
+        val updated = allTransaction.get(index)
+        updated.amount = newTransaction.amount
+        updated.transactionCategory = newTransaction.transactionCategory
+        updated.type = newTransaction.type
+        return dataSource.updateTransaction(updated)
+    }
+
     fun getBalance(): Double {
         val transactions = dataSource.getAllTransactions()
         val income = transactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }
